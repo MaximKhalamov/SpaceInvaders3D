@@ -236,8 +236,14 @@ class Background{
     hint(ENABLE_DEPTH_TEST);
     popMatrix();
 
-    for(Planet planet: planets){
-      planet.drawPlanet();
+    ListIterator<Planet> iterator = planets.listIterator(planets.size());
+    int renderSize = 10;
+    while (iterator.hasPrevious()) {
+      if(renderSize == 0)
+        break;
+      renderSize--;
+      Planet element = iterator.previous();
+      element.drawPlanet();
     }
 
     move( planets.get( planetMoveTo - 1 ), planets.get( planetMoveTo ) );

@@ -28,7 +28,7 @@ class ActionField{
   private List<WaveController> waveControllers;
   private UIInfo uiInfo;
   private MenuController restartController;
-  
+
   if(ANDROID){
   private UIControllerActionField uiController;
   }
@@ -76,7 +76,6 @@ class ActionField{
   public ActionField(List<Planet> planets){
     bullets = new ArrayList<>();
     this.planets = planets;
-
     skySphereModel = loadShape(SKYSPHERE_MODEL_PATH);
     skySphereTexture = loadImage(SKYSPHERE_TEXTURE_PATH);
     skySphereModel.setTexture(skySphereTexture);
@@ -232,6 +231,8 @@ class ActionField{
 
     switch(state){
       case INIT:
+        if(regime == Regime.INF)
+          planets.add( planetGenerator.getNext() );
         shaderController.randomize();
         mainStarship.setShield(PLAYER_SHIELD);
         mainStarship.improveStarship();
@@ -250,7 +251,7 @@ class ActionField{
           enemies.add(waveListGen);
           waveControllers.add(bossController);
         }else if(planets.get(currentLevel + 1).getBossStatus()){
-          LightBossController bossController = new LightBossController(mainStarship, bullets);
+          LightBossController bossController = new LightBossController(mainStarship, bullets, (int)((currentLevel + 2) / NUMBER_OF_PLANETS) + 1);
           waveListGen = bossController.getStarships();
           enemies.add(waveListGen);
           waveControllers.add(bossController);          

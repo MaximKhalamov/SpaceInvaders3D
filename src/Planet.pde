@@ -16,11 +16,14 @@ class Planet{
   private float prevAngle = 0;
   
   public Planet(int enemyNumber, boolean hasBoss, float planetSize, float multiplierSize, float deltaH){
-    float randomAngle = random(- PI / 5 + prevAngle, PI / 5 + prevAngle);
+    // Asymptotic multiplier
+    float am = 8 * INIT_RADIUS / (7 * INIT_RADIUS + currentRadius);
+
+    float randomAngle = random(- PI / 5 * am + prevAngle, PI / 5 * am + prevAngle);
     if(hasBoss){
-      randomAngle = random(- PI / 10 + prevAngle, PI / 10 + prevAngle);            
+      randomAngle = random(- PI / 10 * am + prevAngle, PI / 10 * am + prevAngle);            
     } else{
-      randomAngle = random(- PI / 5 + prevAngle, PI / 5 + prevAngle);    
+      randomAngle = random(- PI / 5 * am + prevAngle, PI / 5 * am + prevAngle);    
     }
     prevAngle = randomAngle;
     x = currentRadius * cos(randomAngle);

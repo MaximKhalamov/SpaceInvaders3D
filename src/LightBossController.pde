@@ -19,7 +19,7 @@ class LightBossController extends WaveController{
   private Starship mainStarship;
   private List<Bullet> bullets;
 
-  public LightBossController(Starship mainStarship, List<Bullet> bullets){
+  public LightBossController(Starship mainStarship, List<Bullet> bullets, int numberOfBosses){
     this.mainStarship = mainStarship;
     this.bullets = bullets;
     float bossPosX;
@@ -42,8 +42,12 @@ class LightBossController extends WaveController{
     }
 
     bossStarships = new ArrayList<>();
-    bossStarships.add(new BossStarship(LIGHT_BOSS_HEALTH, LIGHT_BOSS_SHIELD, -WIDTH / 2 + WIDTH/10, HEIGHT / 2, L_MIN ));
-    bossStarships.add(new BossStarship(LIGHT_BOSS_HEALTH, LIGHT_BOSS_SHIELD, -WIDTH / 2 - WIDTH/10, HEIGHT / 2, L_MIN ));  
+    for(int i = 0; i < numberOfBosses; i++){
+      bossStarships.add(new BossStarship(LIGHT_BOSS_HEALTH, LIGHT_BOSS_SHIELD,
+                                        -WIDTH / 2 + WIDTH / 8 * sin(2 * PI * i / numberOfBosses),
+                                        HEIGHT / 2 + HEIGHT / 8 * cos(2 * PI * i / numberOfBosses),
+                                        L_MIN ));
+    }
   }
 
   @Override
