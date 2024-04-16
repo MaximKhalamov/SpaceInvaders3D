@@ -36,7 +36,14 @@ class Planet{
     r = currentRadius;
     currentRadius += 0.5 * INIT_RADIUS;
 
-    model = loadShape(getRandomModel());
+    if(ANDROID){
+      model = loadShape(getRandomModel());
+    }
+
+    if(JAVA){
+      model = loadShape(getRandomModel(".obj"));
+      model.setTexture(loadImage(getRandomModel(".png")));
+    }
 
     if(model == null){
       println("Model not found");
@@ -54,7 +61,7 @@ class Planet{
   
 
   if(JAVA){
-    private String getRandomModel(){
+    private String getRandomModel(String str){
       //File directory = new File(RELATIVE_PATH + PLANET_TEXTURE_PATHS);
       File directory = new File(PLANET_TEXTURE_PATHS);
       
@@ -67,16 +74,16 @@ class Planet{
       File[] files = directory.listFiles();
 
       if (files == null || files.length == 0) {
+          System.out.println(directory.getAbsolutePath());
           System.err.println("No files found in the directory.");
           return null;
       }
       Random random = new Random();
       int randomIndex = random.nextInt(files.length);
 
-      // StringBuilder sb = new StringBuilder(files[randomIndex].getRelativePath());
       StringBuilder sb = new StringBuilder(files[randomIndex].toString());
       sb.delete(sb.length() - 4, sb.length());
-      sb.append(".obj");
+      sb.append(str);
       println(sb.toString());
       return sb.toString();
     }

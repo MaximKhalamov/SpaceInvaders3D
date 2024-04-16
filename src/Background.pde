@@ -217,6 +217,7 @@ class Background{
     }
     noLights();
     pushMatrix();
+    translate(planets.get( planetMoveTo - 1 ).getX(),planets.get( planetMoveTo - 1 ).getY(),0);
     rotateY(skySphereRotation);
     shaderController.useHueShader();
     shape(skySphereModel);
