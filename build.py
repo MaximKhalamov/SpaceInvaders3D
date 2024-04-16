@@ -6,6 +6,7 @@ import shutil
 SRC_DIRECTORY = "./src"
 DEST_JAVA_DIRECTORY = "./buildJava/SpaceInvaders"
 DEST_ANDROID_DIRECTORY = "./buildAndroid/SpaceInvaders"
+PROCESSING_JAVA_PATH = "/home/max/Desktop/processing-4.3/processing-java"
 
 
 def main():
@@ -13,7 +14,17 @@ def main():
     copy_dir(SRC_DIRECTORY + "/javaClasses", DEST_JAVA_DIRECTORY)
     copy_dir("./assets", DEST_ANDROID_DIRECTORY + "/data")
     copy_dir("./assets", DEST_JAVA_DIRECTORY + "/assets")
+
     preprocess()
+
+    # --variant is broken?
+    os.system(f"{PROCESSING_JAVA_PATH} --sketch={DEST_JAVA_DIRECTORY} --variant=windows-amd64 --export")
+    shutil.rmtree(DEST_JAVA_DIRECTORY + "/windows-amd64/source")
+    shutil.copy(SRC_DIRECTORY + "/javaClasses/config.properties", DEST_JAVA_DIRECTORY + "/windows-amd64/config.properties")
+    copy_dir("./assets", DEST_JAVA_DIRECTORY + "/windows-amd64/assets")
+
+    shutil.rmtree("./windows-amd64/")
+    shutil.move(DEST_JAVA_DIRECTORY + "/windows-amd64", "./")
 
 
 def get_text_condition(*words):

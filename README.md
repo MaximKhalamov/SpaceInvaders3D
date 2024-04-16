@@ -6,7 +6,6 @@ How to run?
 4) Run
 
 TODO:
-1) Make autobuild for PC and Android without opening Processing IDE
-2) Make infinite campaign of the game
-3) Little improvements
-4) Optimize assets if possible
+1) Make autobuild for Linux and Android without opening Processing IDE
+2) Little improvements
+3) Optimize assets if possible
