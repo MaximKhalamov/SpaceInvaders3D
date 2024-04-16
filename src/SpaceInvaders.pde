@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ListIterator;
+
 
 if(JAVA){
 import ddf.minim.*;
@@ -132,6 +134,7 @@ PImage CROSS_ICON;
 PFont UI_FONT;
 
 AudioController audioController;
+PlanetGenerator planetGenerator;
 
 int STARTLEVEL = 0;
 //fireRatePlayer *= 2;
@@ -150,6 +153,12 @@ enum Signal{
   MENU
 }
 
+enum Regime{
+  CPG,
+  INF
+}
+
+Regime regime;
 // --------------------------------------- END BETTER DO NOT TOUCH ---------------------------------------
 
 // --------------------------------------- FILE PATHS ---------------------------------------
@@ -234,29 +243,10 @@ class Main{
     playerShield = PLAYER_SHIELD;
 
     planets = new ArrayList<Planet>();
+    planetGenerator = new PlanetGenerator();
+
     for(int i = 0; i < NUMBER_OF_PLANETS; i++){
-      int enemyNumber = (int)(MULTIPLIER_ENEMIES * sqrt(i + 1) * 10);
-
-      Random random = new Random();
-      
-      float minMult = 0.15;
-      float midMult = 1.0;
-      float maxMult = 4.5;
-      
-      float multiplierSize;
-      if(i < 3){
-        multiplierSize = minMult + (midMult - minMult) * random.nextFloat();
-      } else {
-        multiplierSize = midMult + (maxMult - midMult) * random.nextFloat();      
-      }
-      
-      float minDH = -25f;
-      float maxDH =  25f;
-      float deltaH = minDH + (maxDH - minDH) * random.nextFloat();
-      //float
-
-      // The last planet always contain boss
-      planets.add( new Planet(enemyNumber, i == NUMBER_OF_PLANETS - 1, PLANET_SIZE, multiplierSize, deltaH) );
+      planets.add( planetGenerator.getNext() );
     }
     currentLevel = 0;
 
@@ -445,12 +435,22 @@ void draw(){
         // Start
         if(startController.getState(0)){
           main.changeState(State.ACTIONFIELD);
+          regime = Regime.CPG;
           if(JAVA){
             inGame = true;  
             noCursor();
             warpPointer(CENTER_X, CENTER_Y);
           }
-
+        }
+        // Infinite
+        if(startController.getState(1)){
+          regime = Regime.INF;
+          main.changeState(State.ACTIONFIELD);
+          if(JAVA){
+            inGame = true;  
+            noCursor();
+            warpPointer(CENTER_X, CENTER_Y);
+          }
         }
 
         // Settings
