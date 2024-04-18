@@ -201,7 +201,11 @@ String SOUND_FLYING_START_PATH = prefixFile + "sounds" + File.separator + "JetBo
 String SOUND_SHOT_PATH = prefixFile + "sounds" + File.separator + "shot.mp3";
 String SOUND_DAMAGE_PATH = prefixFile + "sounds" + File.separator + "damage.mp3";
 String SOUND_EXPLOSION_PATH = prefixFile + "sounds" + File.separator + "damage.mp3";
+
 String MUSIC_BACKGROUND_PATH = prefixFile + "sounds" + File.separator + "galaxyx27s-edge-154425.mp3";
+String MUSIC_BACKGROUND_PATH1 = prefixFile + "sounds" + File.separator + "donx27t-stop-151123.mp3";
+String MUSIC_BACKGROUND_PATH2 = prefixFile + "sounds" + File.separator + "galaxyx27.mp3";
+String MUSIC_BACKGROUND_PATH3 = prefixFile + "sounds" + File.separator + "push-on-134671.mp3";
 
 String FONT_PATH = prefixFile + "font" + File.separator + "Hack-Regular-48.vlw";
 String HUE_SHADER_PATH = prefixFile + "shaders" + File.separator + "hueOffset.glsl";

@@ -255,34 +255,31 @@ if(ANDROID){
 
 class ShaderController{
   private PShader hueShader;
-  //private float seed;
-  
   private int currentValue = 0;
-  
   private float[][] valuesHSV = {
-    {0.10, 0.48, 1.00},  // not used
-    {0.10, 0.48, 1.00}, // 1st level
-    
-    {0.11, 0.81, 1.00},  // 1-2 transition
-    {0.11, 0.81, 1.00},  // 2nd level
-    
-    {0.20, 0.46, 1.00},  // 2-3 transition
-    {0.20, 0.46, 1.00},  // 3rd level
-    
-    {0.32, 0.46, 0.85},  // 3-4 transition
-    {0.32, 0.46, 0.85},  // 4th level
-    
-    {0.39, 0.63, 0.80},  // 4-5 transition
-    {0.39, 0.63, 0.80},  // 5th level
-    
-    {0.39, 0.88, 0.75},  // 5-6 transition
-    {0.39, 0.88, 0.75},  // 6th level
-    
-    {0.40, 1.00, 0.50},  // 6-7 transition
-    {0.40, 1.00, 0.50},  // 7th level
+    {0.00, 1.00, 1.00},  // 8-1 transition
+    {0.00, 1.00, 1.00},  // 1st level
 
-    {0.44, 1.00, 0.70},  // 7-8 transition
-    {0.44, 1.00, 0.70}   // 8th level
+    {0.125, 1.00, 1.00}, // 1-2 transition
+    {0.125, 1.00, 1.00}, // 2nd level
+
+    {0.25, 1.00, 1.00},  // 2-3 transition
+    {0.25, 1.00, 1.00},  // 3rd level
+
+    {0.375, 1.00, 1.00}, // 3-4 transition
+    {0.375, 1.00, 1.00}, // 4th level
+
+    {0.50, 1.00, 1.00},  // 4-5 transition
+    {0.50, 1.00, 1.00},  // 5th level
+
+    {0.625, 1.00, 1.00}, // 5-6 transition
+    {0.625, 1.00, 1.00}, // 6th level
+
+    {0.75, 1.00, 1.00},  // 6-7 transition
+    {0.75, 1.00, 1.00},  // 7th level
+
+    {0.875, 1.00, 1.00}, // 7-8 transition
+    {0.875, 1.00, 1.00}, // 8th level
 };
   
   public ShaderController(){
@@ -303,9 +300,7 @@ class ShaderController{
   }
   
   public void randomize(){
-    currentValue++;
-    //seed = millis() / 10.;
-    //seed = millis() / 1000.;
+      currentValue++;
   }
   
   public void resetAll(){

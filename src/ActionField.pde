@@ -99,7 +99,7 @@ class ActionField{
 
     UIElements = new ArrayList<>();
     UIElements.add(new UIButton(12 * width / 16, height / 2, 3 * width / 8, height / 10, "restart"));
-    UIElements.add(new UIButton(4 * width / 16, height / 2, 3 * width / 8, height / 10, "exit"));
+    UIElements.add(new UIButton(4 * width / 16, height / 2, 3 * width / 8, height / 10, "exitmenu"));
 
     restartController = new MenuController(UIElements);
   }
@@ -256,7 +256,7 @@ class ActionField{
           enemies.add(waveListGen);
           waveControllers.add(bossController);          
         }else{
-          for(int j = 0; j < NUMBER_OF_WAVES; j++){
+          for(int j = 0; j < NUMBER_OF_WAVES * sqrt((currentLevel + 1)*0.4); j++){
             
             waveControllers.add(new WaveController(planets.get(currentLevel).getEnemyNumber()));
             waveListGen = waveControllers.get(j).getStarships();
@@ -380,12 +380,29 @@ class ActionField{
           shaderController.resetAll();
           audioController.continuePlayers();
           rl = new ResourcesLoader();
-          rl.emptyLoading();
+          rl.emptyLoading(State.ACTIONFIELD);
+
+          main.changeState(State.ACTIONFIELD);
+          if(JAVA){
+            inGame = true;  
+            noCursor();
+            warpPointer(CENTER_X, CENTER_Y);
+          }
+          if(ANDROID){
+            audioController.continuePlayers();
+          }
         }
         
         // Exit
         if(restartController.getState(1)){
-          exit();
+          currentRadius = INIT_RADIUS;
+          radiusMultiplier = 1.0f;
+          enemyKilled = 0;
+          fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
+          shaderController.resetAll();
+          audioController.continuePlayers();
+          rl = new ResourcesLoader();
+          rl.emptyLoading();
         }
         return Signal.CONTINUE;
       default:
