@@ -38,7 +38,7 @@ class Translation{
     addToDictionaries("youwin", "YOU WIN", "ПОБЕДА");
     addToDictionaries("start", "CAMPAIGN", "КАМПАНИЯ");
     addToDictionaries("language", "LANGUAGE", "LANGUAGE");
-    addToDictionaries("infinite", "INFINITE", "БЕСКОНЕЧНЫЙ");  
+    addToDictionaries("infinite", "ENDLESS", "БЕСКОНЕЧНЫЙ");  
     addToDictionaries("exitmenu", "BACK TO MENU", "НАЗАД В МЕНЮ");  
   }
   

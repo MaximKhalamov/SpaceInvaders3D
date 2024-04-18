@@ -69,7 +69,7 @@ class Planet{
       File directory = new File(PLANET_TEXTURE_PATHS);
       
       if (!directory.isDirectory()) {
-        System.out.println(directory.getAbsolutePath());
+        System.err.println(directory.getAbsolutePath());
         System.err.println("Specified path is not a directory.");
         return null;
       }
@@ -77,7 +77,7 @@ class Planet{
       File[] files = directory.listFiles();
 
       if (files == null || files.length == 0) {
-          System.out.println(directory.getAbsolutePath());
+          System.err.println(directory.getAbsolutePath());
           System.err.println("No files found in the directory.");
           return null;
       }
@@ -87,7 +87,6 @@ class Planet{
       StringBuilder sb = new StringBuilder(files[randomIndex].toString());
       sb.delete(sb.length() - 4, sb.length());
       sb.append(str);
-      println(sb.toString());
       return sb.toString();
     }
   }
