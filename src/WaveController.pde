@@ -4,6 +4,8 @@ enum TrajectoryType{
   TRAJECTORY_DELTOID,
   TRAJECTORY_PENTOID,
   TRAJECTORY_SEXTOID,
+  TRAJECTORY_RANDOM1,
+  TRAJECTORY_RANDOM2,
   TRAJECTORY_LISSAJOUS1,
   TRAJECTORY_LISSAJOUS2,
   TRAJECTORY_LISSAJOUS3,
@@ -38,7 +40,17 @@ class WaveController{
   private TrajectoryType trajectoryType;
   Map<Starship, Integer> starshipsWithTimer = new HashMap<>();
   
+  public float getEnemiesPosition() {
+    if(starships != null && starships.size() != 0) {
+      return starships.get(0).getPosZ();
+    }
+    else return 0.0f;
+  }
   
+  public float getRCollidable() { 
+    return ENEMY_COLLISION_R;
+  }
+
   private WaveController(){
     
   }
@@ -172,21 +184,29 @@ class WaveController{
         ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, getHypocycloidX(6.0, ( (float)i / enemyNumber + t ) ))); 
         ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, getHypocycloidY(6.0, ( (float)i / enemyNumber + t ) ))); 
         break;
+      case TRAJECTORY_RANDOM1: 
+        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.25 * pow(1 + sin( 2 * PI * ( (float)i / enemyNumber + t ) ), 2))); 
+        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.25 * pow(1 + cos( 2 * PI * ( (float)i / enemyNumber + t ) ), 2))); 
+        break;
+      case TRAJECTORY_RANDOM2: 
+        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 1. / sqrt(2.) * pow(1 + sin( 2 * PI * ( (float)i / enemyNumber + t ) ), 1 / 2.))); 
+        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 1. / sqrt(2.) * pow(1 + cos( 2 * PI * ( (float)i / enemyNumber + t ) ), 1 / 2.))); 
+        break;
       case TRAJECTORY_LISSAJOUS1: 
-        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 3 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
-        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 2 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 2 * 6.2 * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 3 * 6.2 * ( (float)i / enemyNumber + t ) )))); 
         break;
       case TRAJECTORY_LISSAJOUS2: 
-        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 3 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
-        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 2 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 3 * 6.2 * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 2 * 6.2 * ( (float)i / enemyNumber + t ) )))); 
         break;
       case TRAJECTORY_LISSAJOUS3: 
-        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 3 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
-        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 1 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 3 * 6.25 * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + cos( 1 * 6.25 * ( (float)i / enemyNumber + t ) )))); 
         break;
       case TRAJECTORY_LISSAJOUS4: 
-        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + sin( 1 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
-        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 3 * 2* PI * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosX(lerp(maxX - OFFSET_X, OFFSET_X, 0.5 * (1 + cos( 1 * 6.25 * ( (float)i / enemyNumber + t ) )))); 
+        ss.setPosY(lerp(maxY - OFFSET_Y, OFFSET_Y, 0.5 * (1 + sin( 3 * 6.25 * ( (float)i / enemyNumber + t ) )))); 
         break;
     }
     float nextPosX = ss.getPosX();    

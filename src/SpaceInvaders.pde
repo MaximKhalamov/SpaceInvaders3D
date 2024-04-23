@@ -99,6 +99,8 @@ float rx, ry, rz;
 
 boolean isGlobalController = true;
 
+int timeBoss = -1;
+
 // These vars are overrided so you can use any number
 int HEIGHT = 0;
 int WIDTH = 0;
@@ -207,7 +209,7 @@ String MUSIC_BACKGROUND_PATH1 = prefixFile + "sounds" + File.separator + "donx27
 String MUSIC_BACKGROUND_PATH2 = prefixFile + "sounds" + File.separator + "galaxyx27.mp3";
 String MUSIC_BACKGROUND_PATH3 = prefixFile + "sounds" + File.separator + "push-on-134671.mp3";
 
-String FONT_PATH = prefixFile + "font" + File.separator + "Hack-Regular-48.vlw";
+String FONT_PATH = prefixFile + "font" + File.separator + "QuinqueFive-48.vlw";
 String HUE_SHADER_PATH = prefixFile + "shaders" + File.separator + "hueOffset.glsl";
 
 String CROSS_UI_PATH = prefixFile + "ui" + File.separator + "pause.png";
@@ -504,21 +506,7 @@ void draw(){
         
         // Restart
         if(menuController.getState(1)){
-          //audioController.stopPlayers();
-          //main = new Main();
-          //audioController.playLoopSounds();
-          currentRadius = INIT_RADIUS;
-          radiusMultiplier = 1.0f;
-          enemyKilled = 0;
-          shaderController.resetAll();
-          fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
-          if(ANDROID){
-            audioController.continuePlayers();
-          }
-          rl = new ResourcesLoader();
-          rl.emptyLoading(State.ACTIONFIELD);
-          // main.changeState(State.ACTIONFIELD);
-
+          resetAll(State.ACTIONFIELD);
           if(JAVA){
             inGame = true;  
             noCursor();
@@ -531,16 +519,7 @@ void draw(){
         
         // BACK TO MENU
         if(menuController.getState(2)){
-          currentRadius = INIT_RADIUS;
-          radiusMultiplier = 1.0f;
-          enemyKilled = 0;
-          shaderController.resetAll();
-          fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
-          if(ANDROID){
-            audioController.continuePlayers();
-          }
-          rl = new ResourcesLoader();
-          rl.emptyLoading();
+          resetAll();
         }
         
         // Settings
@@ -700,7 +679,7 @@ if(ANDROID){
       ex.printStackTrace();
     }
 
-    NUMBER_OF_PLANETS = Integer.parseInt(sharedPreferences.getString("NUMBER_OF_PLANETS", "8"));
+    NUMBER_OF_PLANETS = Integer.parseInt(sharedPreferences.getString("NUMBER_OF_PLANETS", "2"));
     MULTIPLIER_ENEMIES = Float.parseFloat(sharedPreferences.getString("MULTIPLIER_ENEMIES", "0.4"));
     MULTIPLIER_FIRE_RATE_ENEMY = Float.parseFloat(sharedPreferences.getString("MULTIPLIER_FIRE_RATE_ENEMY", "1.8"));
     MULTIPLIER_FIRE_RATE_PLAYER = Float.parseFloat(sharedPreferences.getString("MULTIPLIER_FIRE_RATE_PLAYER", "0.8"));
@@ -717,7 +696,7 @@ if(ANDROID){
     SENSITIVITY_Y = Float.parseFloat(sharedPreferences.getString("SENSITIVITY_Y", "40"));
 
     IS_CINEMATOGRAPHIC_CAMERA = Boolean.parseBoolean(sharedPreferences.getString("IS_CINEMATOGRAPHIC_CAMERA", "true"));
-    NUMBER_OF_WAVES = Integer.parseInt(sharedPreferences.getString("NUMBER_OF_WAVES", "5"));
+    NUMBER_OF_WAVES = Integer.parseInt(sharedPreferences.getString("NUMBER_OF_WAVES", "3"));
 
     LOD1_DISTANCE = Float.parseFloat(sharedPreferences.getString("LOD1_DISTANCE", "2000.0"));
     LOD2_DISTANCE = Float.parseFloat(sharedPreferences.getString("LOD2_DISTANCE", "3000.0"));
@@ -873,7 +852,7 @@ class ResourcesLoader {
     vertex(-2*width, 2. *height, 0, 1);
     endShape();
     
-    textSize(160 * displayDensity);
+    textSize(120 * displayDensity);
     hint(DISABLE_DEPTH_TEST);
     fill(255);
     textAlign(LEFT);
@@ -938,4 +917,29 @@ class Timer extends Thread{
   public boolean isInt(){
     return isInt;
   }
+}
+
+
+void resetAll(State state){
+  currentRadius = INIT_RADIUS;
+  radiusMultiplier = 1.0f;
+  enemyKilled = 0;
+  fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
+  shaderController.resetAll();
+  audioController.continuePlayers();
+  timeBoss = -1;
+  rl = new ResourcesLoader();
+  rl.emptyLoading(state);
+}
+
+void resetAll(){
+  currentRadius = INIT_RADIUS;
+  radiusMultiplier = 1.0f;
+  enemyKilled = 0;
+  fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
+  shaderController.resetAll();
+  audioController.continuePlayers();
+  timeBoss = -1;
+  rl = new ResourcesLoader();
+  rl.emptyLoading();
 }

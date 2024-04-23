@@ -3,6 +3,9 @@ int LIGHT_BOSS_HEALTH = 180;
 int LIGHT_BOSS_SHIELD = 0;
 
 class LightBossController extends WaveController{
+  private Thread timer;
+  private int secondsNumber = 121;
+
   private int OFFSET_X = -60;
   private int OFFSET_Y = 60;
   private float maxX = -WIDTH, maxY = HEIGHT;
@@ -11,6 +14,8 @@ class LightBossController extends WaveController{
   private float angle = 0f;
   
   private float L_MIN = 1300f;
+  private float L_MAX = 13000f;
+  private float ACCELERATION = 1f;
 
   private int timing = 0;
   private int prioritySS = 0;
@@ -48,6 +53,23 @@ class LightBossController extends WaveController{
                                         HEIGHT / 2 + HEIGHT / 8 * cos(2 * PI * i / numberOfBosses),
                                         L_MIN ));
     }
+    timer = new Thread(new Runnable(){
+      @Override    
+      public void run(){
+        try{
+          while(secondsNumber > 0){
+            if(main.getState() != State.ACTIONFIELD)
+              continue;
+            Thread.sleep(1000);
+            secondsNumber--;          
+          }
+          //positionCalculator.interrupt();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
+    });
+    timer.start();
   }
 
   @Override
@@ -57,6 +79,17 @@ class LightBossController extends WaveController{
   
   @Override
   public void moveFrame(){
+    timeBoss = secondsNumber;
+    if(secondsNumber == 0){
+      for(Starship ss : bossStarships){
+        ss.setVelZ(ss.getVelZ() + ACCELERATION);
+        if(ss.getPosZ() > L_MAX){
+          // FAIL
+          this.mainStarship.setDamage(9999);
+        }
+      }
+    }
+
     timing++;
     for(int i = 0; i < bossStarships.size(); i++){
       moveBoss(bossStarships.get(i), prioritySS == i);
@@ -105,5 +138,17 @@ class LightBossController extends WaveController{
       ss.setVelY(-ss.getVelY());
 
     ss.frameMove();
+  }
+
+  public float getEnemiesPosition() {
+    if(bossStarships != null && bossStarships.size() != 0) {
+      return bossStarships.get(0).getPosZ();
+    }
+    else return 0.0f;
+  }
+
+  @Override
+  public float getRCollidable() { 
+    return BOSS_COLLISION_R;
   }
 }

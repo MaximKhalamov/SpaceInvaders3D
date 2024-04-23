@@ -293,6 +293,7 @@ class ActionField{
         clearedTiming--;
         if(clearedTiming == 0){
           state = ActionFieldState.INIT;
+          timeBoss = - 1;
           return Signal.SWITCH;
         }
         return Signal.CONTINUE;
@@ -373,14 +374,7 @@ class ActionField{
           //audioController.stopPlayers();
           //main = new Main();
           //audioController.playLoopSounds();
-          currentRadius = INIT_RADIUS;
-          radiusMultiplier = 1.0f;
-          enemyKilled = 0;
-          fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
-          shaderController.resetAll();
-          audioController.continuePlayers();
-          rl = new ResourcesLoader();
-          rl.emptyLoading(State.ACTIONFIELD);
+          resetAll(State.ACTIONFIELD);
 
           main.changeState(State.ACTIONFIELD);
           if(JAVA){
@@ -395,14 +389,7 @@ class ActionField{
         
         // Exit
         if(restartController.getState(1)){
-          currentRadius = INIT_RADIUS;
-          radiusMultiplier = 1.0f;
-          enemyKilled = 0;
-          fireRatePlayer = MULTIPLIER_FIRE_RATE_PLAYER;
-          shaderController.resetAll();
-          audioController.continuePlayers();
-          rl = new ResourcesLoader();
-          rl.emptyLoading();
+          resetAll();
         }
         return Signal.CONTINUE;
       default:
@@ -430,7 +417,20 @@ class ActionField{
             if(bullet.isTimeOver()){
               bulletIterator.remove();
               continue;
-            }else if(bullet.checkCollision(enemy)){
+            }
+
+  // public float getEnemiesPosition() {
+  //   if(starships.size() != 0) {
+  //     return starships.get(0).getPosZ();
+  //   }
+  // }
+  
+  // public float getRCollidable() { 
+            if( waveControllers.get(0).getRCollidable() > 0 && 
+                abs(waveControllers.get(0).getEnemiesPosition() - bullet.getPosZ()) > waveControllers.get(0).getRCollidable()){
+                  continue;
+            }
+            else if(bullet.checkCollision(enemy)){
               bulletIterator.remove();
               if(enemy.setDamage( bullet.getDamage() )){
                 effects.add( new ExplosionEffect( enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), enemy instanceof BossStarship ) );

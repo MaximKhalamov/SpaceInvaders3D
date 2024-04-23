@@ -115,11 +115,27 @@ class UIInfo{
     return (enemies.size() == 0)? 0 : enemies.get(0).size();
   }
 
+  public void displayTimer(float t, float x, float y, float z){
+    if(t > 0){
+      textAlign(CENTER, CENTER);
+    if(t > 10)
+      fill(255, 255, 255);
+    else 
+      fill(255, 0, 0);
+      if(JAVA){
+        text(int(t / 60) + ":" + String.format("%02d", int(t % 60)), - x, - 1.6 * height + y, - 2 * height);
+      }
+      if(ANDROID){
+        text(int(t / 60) + ":" + String.format("%02d", int(t % 60)), - x, - 1.4 * height + y, - 2 * height);
+      }
+    }
+  }
+
   public void displayScreen(color bgColor, String text, color textColor){
     pushMatrix();
     resetMatrix();
     translate(0,0 , - 2 * height);
-    textSize(140 * displayDensity);
+    textSize(4./5 * 140 * displayDensity);
     hint(DISABLE_DEPTH_TEST);
 
     fill(bgColor);
@@ -136,7 +152,7 @@ class UIInfo{
     pushMatrix();
     resetMatrix();
     translate(0,0 , - 2 * height);
-    textSize(240 * displayDensity);
+    textSize(4./5 * 240 * displayDensity);
     hint(DISABLE_DEPTH_TEST);
 
     fill(bgColor);
@@ -170,14 +186,14 @@ if(JAVA){
     int playerShield = starship.getShield();
     int playerHealth = starship.getHealth();
   
-    String uiHealthBar = "   " + playerHealth;
-    String uiShieldBar = "   " + playerShield;
-    String uiEnemiesKilled = "   " + enemyKilled;
+    String uiHealthBar = "  " + playerHealth;
+    String uiShieldBar = "  " + playerShield;
+    String uiEnemiesKilled = "  " + enemyKilled;
     //String uiEnemiesLeft = "Left: " + getEnemiesNumber();
     
     pushMatrix();
     rotateY(PI);
-    textSize(180);
+    textSize(4./5 * 180);
     hint(DISABLE_DEPTH_TEST);
 
     fill(255, 255, 255);
@@ -195,6 +211,8 @@ if(JAVA){
     text(uiHealthBar, - x - 1.9 * width, + 1.8 * height + y, - 2 * height);
     text(uiShieldBar, - x - 1.4 * width, + 1.8 * height + y, - 2 * height);    
 
+    displayTimer(timeBoss, x, y, z);
+
     hint(ENABLE_DEPTH_TEST);
     popMatrix();
   }
@@ -211,7 +229,7 @@ if(ANDROID){
     
     pushMatrix();
     rotateY(PI);
-    textSize(100 * displayDensity);
+    textSize(4./5 * 80 * displayDensity);
     hint(DISABLE_DEPTH_TEST);
 
     fill(255, 255, 255);
@@ -229,6 +247,8 @@ if(ANDROID){
     fill(255, 255, 255);
     drawIcon(HEALTH_ICON, - x - 1.8 * width, - 1.7 * height + y, - 2 * height, height / 10., height / 10.);
     drawIcon(SHIELD_ICON, - x - 1.4 * width, - 1.7 * height + y, - 2 * height, height / 10., height / 10.);
+
+    displayTimer(timeBoss, x, y, z);
 
     hint(ENABLE_DEPTH_TEST);
     popMatrix();
@@ -256,30 +276,32 @@ if(ANDROID){
 class ShaderController{
   private PShader hueShader;
   private int currentValue = 0;
+  private boolean isReversed = false;
+
   private float[][] valuesHSV = {
-    {0.00, 1.00, 1.00},  // 8-1 transition
-    {0.00, 1.00, 1.00},  // 1st level
+    {0.64, 1.00, 0.30},  // 8-1 transition
+    {0.64, 1.00, 0.30},  // 1st level
 
-    {0.125, 1.00, 1.00}, // 1-2 transition
-    {0.125, 1.00, 1.00}, // 2nd level
+    {0.09, 0.15, 0.40}, // 1-2 transition
+    {0.09, 0.15, 0.40}, // 2nd level
 
-    {0.25, 1.00, 1.00},  // 2-3 transition
-    {0.25, 1.00, 1.00},  // 3rd level
+    {0.19, 0.40, 0.45},  // 2-3 transition
+    {0.19, 0.40, 0.45},  // 3rd level
 
-    {0.375, 1.00, 1.00}, // 3-4 transition
-    {0.375, 1.00, 1.00}, // 4th level
+    {0.27, 0.45, 0.50}, // 3-4 transition
+    {0.27, 0.45, 0.50}, // 4th level
 
-    {0.50, 1.00, 1.00},  // 4-5 transition
-    {0.50, 1.00, 1.00},  // 5th level
+    {0.38, 0.40, 0.60},  // 4-5 transition
+    {0.38, 0.40, 0.60},  // 5th level
 
-    {0.625, 1.00, 1.00}, // 5-6 transition
-    {0.625, 1.00, 1.00}, // 6th level
+    {0.40, 1.00, 0.50}, // 5-6 transition
+    {0.40, 1.00, 0.50}, // 6th level
 
-    {0.75, 1.00, 1.00},  // 6-7 transition
-    {0.75, 1.00, 1.00},  // 7th level
+    {0.43, 1.00, 0.55},  // 6-7 transition
+    {0.43, 1.00, 0.55},  // 7th level
 
-    {0.875, 1.00, 1.00}, // 7-8 transition
-    {0.875, 1.00, 1.00}, // 8th level
+    {0.43, 1.00, 0.80}, // 7-8 transition
+    {0.43, 1.00, 0.80}, // 8th level
 };
   
   public ShaderController(){
@@ -300,11 +322,27 @@ class ShaderController{
   }
   
   public void randomize(){
-      currentValue++;
+      if(currentValue == 0 && isReversed){
+        isReversed = false;
+        currentValue = -1;
+      }
+
+      if(currentValue == (valuesHSV.length - 1) && !isReversed){
+        isReversed = true;
+        currentValue = valuesHSV.length;
+      }
+
+      if(isReversed)
+        currentValue--;
+      else
+        currentValue++;
+
+      println("currentValue: " + currentValue + "\tisReversed: " + isReversed);
   }
   
   public void resetAll(){
     currentValue = 0;
+    isReversed = false;
   }
 }
 

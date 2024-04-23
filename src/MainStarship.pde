@@ -3,7 +3,7 @@ float PLAYER_COLLISION_R = 2 * AXIS_SCALE / 2;
 
 float PLAYER_BULLET_SPEED_Z = 50.0f;
 float PLAYER_BULLET_RADIUS = 5.0f;
-int PLAYER_BULLET_LIFE_TIME = 50;
+int PLAYER_BULLET_LIFE_TIME = 300;
 int PLAYER_DAMAGE = 10;
 
 class MainStarship extends Starship{
@@ -84,7 +84,7 @@ class MainStarship extends Starship{
   }
   
   public boolean display(float camX, float camY, float camZ, float camDirX, float camDirY, float camDirZ, float rotation){
-   if( isObjectOnScreen(getPosX(), getPosY(), getPosZ(), camX, camY, camZ, camDirX, camDirY, camDirZ) ){
+    if( isObjectOnScreen(getPosX(), getPosY(), getPosZ(), camX, camY, camZ, camDirX, camDirY, camDirZ) ){
       return false;
     }
     float distance = getNorm(getPosX() - camX, getPosY() - camY, getPosZ() - camZ);

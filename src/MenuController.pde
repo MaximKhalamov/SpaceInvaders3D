@@ -59,7 +59,12 @@ class UIButton extends UIElement{
     setText();
     
     rectMode(CORNER);
-    textSize(140 * displayDensity);
+    if(JAVA){
+      textSize(4./5 * 110 * displayDensity);
+    }
+    if(ANDROID){
+      textSize(4./5 * 80 * displayDensity);
+    }
     if(text.equals("MENU")){
       textureMode(NORMAL);
       noStroke();

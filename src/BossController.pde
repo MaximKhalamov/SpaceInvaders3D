@@ -8,8 +8,7 @@ int BOSS_SHIELD = 0;
 
 class BossController extends WaveController{
   private Thread timer;
-  //private Thread positionCalculator;
-  private int secondsNumber = 91;
+  private int secondsNumber = 121;
   
   private int OFFSET_X = -60;
   private int OFFSET_Y = 60;
@@ -86,24 +85,6 @@ class BossController extends WaveController{
     });
     timer.start();
     
-    
-    //positionCalculator = new Thread(new Runnable(){
-    //  //private volatile boolean isInt = false;
-      
-    //  @Override    
-    //  public void run(){
-        
-    //    try{
-    //      while(!Thread.currentThread().isInterrupted()){
-
-    //        Thread.sleep(500);
-    //      }
-    //    }catch(InterruptedException e){
-    //      e.printStackTrace();
-    //    }      
-    //  }
-    //});
-    //positionCalculator.start();
   }
   
   @Override
@@ -115,18 +96,19 @@ class BossController extends WaveController{
   
   @Override
   public void moveFrame(){
-      switch(bossState){
-        case BOSS_ATTACK:
-          if(timing % 2 == 0)
-            attack();
-          break;
-        case BOSS_AVOID:
-          //if(timing % 2 == 0)
-          scanning();
-          if(timing % 6 == 0)
-              bullets.add(bossStarship.shot());
-          break;
-      }
+    timeBoss = secondsNumber;
+    switch(bossState){
+      case BOSS_ATTACK:
+        if(timing % 2 == 0)
+          attack();
+        break;
+      case BOSS_AVOID:
+        //if(timing % 2 == 0)
+        scanning();
+        if(timing % 6 == 0)
+            bullets.add(bossStarship.shot());
+        break;
+    }
     //println(secondsNumber);
     if(secondsNumber == 0){
       bossStarship.setVelZ(bossStarship.getVelZ() + ACCELERATION);
@@ -238,5 +220,17 @@ class BossController extends WaveController{
       bossStarship.setVelY(-bossStarship.getVelY());
 
     bossStarship.frameMove();
+  }
+
+  public float getEnemiesPosition() {
+    if(bossStarship != null) {
+      return bossStarship.getPosZ();
+    }
+    else return 0.0f;
+  }
+
+  @Override
+  public float getRCollidable() { 
+    return BOSS_COLLISION_R;
   }
 }
