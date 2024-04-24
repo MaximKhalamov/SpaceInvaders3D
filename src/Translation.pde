@@ -40,6 +40,8 @@ class Translation{
     addToDictionaries("language", "LANGUAGE", "LANGUAGE");
     addToDictionaries("infinite", "ENDLESS", "БЕСКОНЕЧНЫЙ");  
     addToDictionaries("exitmenu", "BACK TO MENU", "НАЗАД В МЕНЮ");  
+    addToDictionaries("destroyin2min", "DESTROY in 2:00", "УНИЧТОЖИТЬ за 2:00");  
+    addToDictionaries("best", "BEST:", "ЛУЧШИЙ:");  
   }
   
   public void setLang(String lang){

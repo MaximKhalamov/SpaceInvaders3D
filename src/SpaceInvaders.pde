@@ -100,7 +100,7 @@ float rx, ry, rz;
 boolean isGlobalController = true;
 
 int timeBoss = -1;
-
+int bestScore;
 // These vars are overrided so you can use any number
 int HEIGHT = 0;
 int WIDTH = 0;
@@ -646,6 +646,25 @@ if(JAVA){
     isSoundOn = Boolean.parseBoolean(prop.getProperty("IS_SOUND_ON"));
     isMusicOn = Boolean.parseBoolean(prop.getProperty("IS_MUSIC_ON"));
     language = prop.getProperty("LANGUAGE");
+
+    bestScore = Integer.parseInt(prop.getProperty("BEST_SCORE"));
+
+  }
+}
+
+void updateBestScore(){
+  if(ANDROID){
+    editor.putString("BEST_SCORE","" + bestScore);
+    editor.commit();
+  }  
+  if(JAVA){
+    prop.setProperty("BEST_SCORE","" + bestScore);
+    try{
+      File configFile = new File(sketchPath("config.properties"));
+      prop.store(new FileWriter(configFile), "config");
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
   }
 }
 
@@ -679,7 +698,7 @@ if(ANDROID){
       ex.printStackTrace();
     }
 
-    NUMBER_OF_PLANETS = Integer.parseInt(sharedPreferences.getString("NUMBER_OF_PLANETS", "2"));
+    NUMBER_OF_PLANETS = Integer.parseInt(sharedPreferences.getString("NUMBER_OF_PLANETS", "8"));
     MULTIPLIER_ENEMIES = Float.parseFloat(sharedPreferences.getString("MULTIPLIER_ENEMIES", "0.4"));
     MULTIPLIER_FIRE_RATE_ENEMY = Float.parseFloat(sharedPreferences.getString("MULTIPLIER_FIRE_RATE_ENEMY", "1.8"));
     MULTIPLIER_FIRE_RATE_PLAYER = Float.parseFloat(sharedPreferences.getString("MULTIPLIER_FIRE_RATE_PLAYER", "0.8"));
@@ -719,7 +738,9 @@ if(ANDROID){
     isMusicOn = Boolean.parseBoolean(sharedPreferences.getString("IS_MUSIC_ON", "true"));
     
     language = sharedPreferences.getString("LANGUAGE", "EN");
-    
+
+    bestScore = Integer.parseInt(sharedPreferences.getString("BEST_SCORE", "0"));
+
   }
 }
 

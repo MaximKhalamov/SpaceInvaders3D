@@ -7,6 +7,7 @@ float CAM_INIT_Z = -48;
 
 enum ActionFieldState{
   INIT,
+  BOSS_TIMING,
   PREPARING,
   PREBATTLE_INFO,
   BATTLE,
@@ -36,6 +37,7 @@ class ActionField{
   private int bulletTiming = 40;
   private int prepareTiming;
   private int clearedTiming;
+  private int bossDestroyTiming;
 
   private ActionFieldState state = ActionFieldState.INIT;
   private PreparingInfo preparingInfo;
@@ -246,16 +248,19 @@ class ActionField{
         List<Starship> waveListGen = new ArrayList<>();
         
         if(planets.get(currentLevel).getBossStatus()){
+          state = ActionFieldState.BOSS_TIMING;
           BossController bossController = new BossController(mainStarship, bullets);
           waveListGen = bossController.getStarships();
           enemies.add(waveListGen);
           waveControllers.add(bossController);
         }else if(planets.get(currentLevel + 1).getBossStatus()){
+          state = ActionFieldState.BOSS_TIMING;
           LightBossController bossController = new LightBossController(mainStarship, bullets, (int)((currentLevel + 2) / NUMBER_OF_PLANETS) + 1);
           waveListGen = bossController.getStarships();
           enemies.add(waveListGen);
           waveControllers.add(bossController);          
         }else{
+          state = ActionFieldState.PREPARING;
           for(int j = 0; j < NUMBER_OF_WAVES * sqrt((currentLevel + 1)*0.4); j++){
             
             waveControllers.add(new WaveController(planets.get(currentLevel).getEnemyNumber()));
@@ -267,9 +272,9 @@ class ActionField{
   
         sd = new StarDrawer();
         
-        state = ActionFieldState.PREPARING;
         prepareTiming = (int)(80 * MULTIPLIER_SCREEN_TRANSISTION);
         clearedTiming = (int)(80 * MULTIPLIER_SCREEN_TRANSISTION);
+        bossDestroyTiming = (int)(80 * MULTIPLIER_SCREEN_TRANSISTION);
         break;
       
       case PREPARING: 
@@ -295,6 +300,16 @@ class ActionField{
           state = ActionFieldState.INIT;
           timeBoss = - 1;
           return Signal.SWITCH;
+        }
+        return Signal.CONTINUE;
+      case BOSS_TIMING:
+        displayAll();
+        uiInfo.displayScreen(color(0,0,0, 180), translation.get("destroyin2min"), color(235,38,38));
+        bossDestroyTiming--;
+        if(bossDestroyTiming == 0){
+          state = ActionFieldState.PREPARING;
+          // timeBoss = - 1;
+          // return Signal.SWITCH;
         }
         return Signal.CONTINUE;
       case WAIT_FOR_SCREEN:
@@ -436,6 +451,10 @@ class ActionField{
                 effects.add( new ExplosionEffect( enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), enemy instanceof BossStarship ) );
                 enemyIterator.remove();
                 enemyKilled++;
+                if(enemyKilled > bestScore){
+                  bestScore = enemyKilled;
+                  updateBestScore();
+                }
               }; 
               break;      
             }

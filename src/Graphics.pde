@@ -123,11 +123,22 @@ class UIInfo{
     else 
       fill(255, 0, 0);
       if(JAVA){
-        text(int(t / 60) + ":" + String.format("%02d", int(t % 60)), - x, - 1.6 * height + y, - 2 * height);
+        text(int(t / 60) + ":" + String.format("%02d", int(t % 60)), - x, - 1.8 * height + y, - 2 * height);
       }
       if(ANDROID){
         text(int(t / 60) + ":" + String.format("%02d", int(t % 60)), - x, - 1.4 * height + y, - 2 * height);
       }
+    }
+  }
+
+  public void displayBestScore(float x, float y, float z){
+    textAlign(CENTER, UP);
+    fill(255, 255, 255);
+    if(JAVA){
+      text(translation.get("best") + "\n" + bestScore, - x + 1.6 * width, - 1.8 * height + y, - 2 * height);
+    }
+    if(ANDROID){
+      text(translation.get("best") + "\n" + bestScore, - x + 1.6 * width, - 1.4 * height + y, - 2 * height);
     }
   }
 
@@ -212,7 +223,7 @@ if(JAVA){
     text(uiShieldBar, - x - 1.4 * width, + 1.8 * height + y, - 2 * height);    
 
     displayTimer(timeBoss, x, y, z);
-
+    displayBestScore(x, y, z);
     hint(ENABLE_DEPTH_TEST);
     popMatrix();
   }
@@ -249,7 +260,7 @@ if(ANDROID){
     drawIcon(SHIELD_ICON, - x - 1.4 * width, - 1.7 * height + y, - 2 * height, height / 10., height / 10.);
 
     displayTimer(timeBoss, x, y, z);
-
+    displayBestScore(x, y, z);
     hint(ENABLE_DEPTH_TEST);
     popMatrix();
   }
@@ -336,8 +347,6 @@ class ShaderController{
         currentValue--;
       else
         currentValue++;
-
-      println("currentValue: " + currentValue + "\tisReversed: " + isReversed);
   }
   
   public void resetAll(){

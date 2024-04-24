@@ -4,7 +4,7 @@ int LIGHT_BOSS_SHIELD = 0;
 
 class LightBossController extends WaveController{
   private Thread timer;
-  private int secondsNumber = 121;
+  private int secondsNumber = 123;
 
   private int OFFSET_X = -60;
   private int OFFSET_Y = 60;
