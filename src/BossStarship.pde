@@ -5,7 +5,7 @@ float BOSS_BULLET_SPEED_X = 0;
 float BOSS_BULLET_SPEED_Y = 0;
 float BOSS_BULLET_SPEED_Z = - 50.0f;
 float BOSS_BULLET_RADIUS = 5.0f;
-int BOSS_BULLET_LIFE_TIME = 50;
+int BOSS_BULLET_LIFE_TIME = 150;
 int BOSS_DAMAGE = 10;
 
 class BossStarship extends Starship{

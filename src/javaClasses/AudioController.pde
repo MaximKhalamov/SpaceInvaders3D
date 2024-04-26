@@ -5,55 +5,82 @@ class AudioController{
   boolean isLooped = false;
   boolean isPlayable;
   
+  int number = 0;
+
   boolean started;
   
   //private AudioPlayer startSound;
   //private AudioPlayer loopSound;
+  private AudioPlayer mainTheme;
+
   private AudioPlayer music;
+
+  private List<AudioPlayer> musics;
+
+
   private AudioSample explosionSound;
   private AudioSample damageSound;
   private AudioSample shotSound;
   
   public void update(){
     if(isMusicOn){
-      music.unmute();
+      mainTheme.unmute();
+
+      for(AudioPlayer ap : musics){
+        ap.unmute();
+      }
     } else {
-      music.mute();
+      mainTheme.mute();
+      for(AudioPlayer ap : musics){
+        ap.mute();
+      }
     }
-    
-    //if(isSoundOn){
-    //  loopSound.unmute();
-    //  startSound.unmute();
-    //} else {
-    //  loopSound.mute();
-    //  startSound.mute();
-    //}
   }
 
   public AudioController(Minim minim){
-    //startSound = minim.loadFile(SOUND_FLYING_START_PATH);
-    //loopSound = minim.loadFile(SOUND_FLYING_LOOP_PATH);
-    music = minim.loadFile(MUSIC_BACKGROUND_PATH);
+    musics = new ArrayList<>();
+
+    mainTheme = minim.loadFile(MUSIC_MAIN_THEME);
+
+    musics.add(minim.loadFile(MUSIC_BACKGROUND_PATH1));
+    musics.add(minim.loadFile(MUSIC_BACKGROUND_PATH2));
+    musics.add(minim.loadFile(MUSIC_BACKGROUND_PATH3));
+
     explosionSound = minim.loadSample(SOUND_EXPLOSION_PATH);
     damageSound = minim.loadSample(SOUND_DAMAGE_PATH);
     shotSound = minim.loadSample(SOUND_SHOT_PATH);
+
+    mainTheme.loop();
+  
   }
   
   public void stopPlayers(){
-    //startSound.close();
-    //loopSound.pause();
-    music.pause();
-    //explosionSound.close();
-    //damageSound.close();
-    //shotSound.close();       
+    if(music != null){
+      music.rewind();
+      music.pause();
+    }
+    // mainTheme.play();
   }
 
   public void continuePlayers(){
       //loopSound.loop();
-      music.loop();
+      if(music == null)
+        music = getRandomAudioPlayer(music);
+      else if(!music.isPlaying()){
+        music.rewind();
+        music.pause();
+        music = getRandomAudioPlayer(music);
+      }
+      music.play();
+      // mainTheme.pause();
     //}     
   }
   
+  private AudioPlayer getRandomAudioPlayer(AudioPlayer ap){
+    number = (number + 1) % musics.size();
+    return musics.get(number);
+  }
+
   public void playOnceExplosion(){
     if(isSoundOn){
       explosionSound.trigger();
@@ -79,20 +106,18 @@ class AudioController{
   }
   
   public void playLoopSounds(){
-    if(!started){
-      music.loop();
-      //startSound.play();
-      started = true;
-    } 
-    //else if(!startSound.isPlaying() && !isLooped){
-    //  isLooped = true;
-    //  //loopSound.loop();
-    //}
+      if(music == null)
+        music = getRandomAudioPlayer(music);
+      else if(!music.isPlaying()){
+        music.rewind();
+        music.pause();
+        music = getRandomAudioPlayer(music);
+      }
+      music.play();
+      // mainTheme.pause();
   }
   
   public void stopLoopSounds(boolean isStopMusic){
-    //loopSound.close();
-    //startSound.close();
     if(isStopMusic)
       music.close();
   }

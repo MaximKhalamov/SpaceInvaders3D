@@ -87,8 +87,10 @@ Context context;
 SensorManager manager;
 Sensor sensor;
 AssetManager assetManager;
+Activity activity;
 }
 
+AppVideoPlayer avp;
 
 Properties prop;
 
@@ -204,12 +206,12 @@ String SOUND_SHOT_PATH = prefixFile + "sounds" + File.separator + "shot.mp3";
 String SOUND_DAMAGE_PATH = prefixFile + "sounds" + File.separator + "damage.mp3";
 String SOUND_EXPLOSION_PATH = prefixFile + "sounds" + File.separator + "damage.mp3";
 
-String MUSIC_BACKGROUND_PATH = prefixFile + "sounds" + File.separator + "galaxyx27s-edge-154425.mp3";
-String MUSIC_BACKGROUND_PATH1 = prefixFile + "sounds" + File.separator + "donx27t-stop-151123.mp3";
+String MUSIC_MAIN_THEME = prefixFile + "sounds" + File.separator + "MainMenuTheme.mp3";
+String MUSIC_BACKGROUND_PATH1 = prefixFile + "sounds" + File.separator + "push-on-134671.mp3";
 String MUSIC_BACKGROUND_PATH2 = prefixFile + "sounds" + File.separator + "galaxyx27.mp3";
-String MUSIC_BACKGROUND_PATH3 = prefixFile + "sounds" + File.separator + "push-on-134671.mp3";
+String MUSIC_BACKGROUND_PATH3 = prefixFile + "sounds" + File.separator + "donx27t-stop-151123.mp3";
 
-String FONT_PATH = prefixFile + "font" + File.separator + "QuinqueFive-48.vlw";
+String FONT_PATH = prefixFile + "font" + File.separator + "RetroGaming-48.vlw";
 String HUE_SHADER_PATH = prefixFile + "shaders" + File.separator + "hueOffset.glsl";
 
 String CROSS_UI_PATH = prefixFile + "ui" + File.separator + "pause.png";
@@ -333,6 +335,13 @@ void setup(){
     orientation(LANDSCAPE);
   }
 
+  if(JAVA){
+    avp = new AppVideoPlayer(this);
+  }
+  if(ANDROID){
+    activity = this.getActivity();
+    avp = new AppVideoPlayer(activity);
+  }
   
   UI_FONT = loadFont(FONT_PATH);
   textFont(UI_FONT);
@@ -360,6 +369,10 @@ State rememberedState = State.START;
 
 void draw(){
   background(0);
+
+  if(!avp.isStoppedPlaying()){
+    return;
+  }
   
   if(!isLoading){
     //public UIButton(float xScreen, float yScreen, float lx, float ly, String text)
@@ -409,7 +422,7 @@ void draw(){
   } else{
     switch(main.getState()){
       case ACTIONFIELD: 
-      
+        audioController.playLoopSounds();
         switch(main.drawActionField()){
           case SWITCH: 
             main.changeState(State.BACKGROUND);
@@ -431,6 +444,9 @@ void draw(){
           inGame = false;
           cursor();
         }
+        if(ANDROID){
+          audioController.playTheme();
+        }
 
         startController.draw();
         if(isTouchable == false && !mousePressed)
@@ -447,6 +463,8 @@ void draw(){
             noCursor();
             warpPointer(CENTER_X, CENTER_Y);
           }
+
+          avp.playVideo("cutscene1");
         }
         // Infinite
         if(startController.getState(1)){
@@ -477,6 +495,8 @@ void draw(){
         break;  
       
       case MENU:
+        audioController.playLoopSounds();
+
         menuController.draw();
         if(JAVA){
           if(isTouchable == false && !mousePressed)
@@ -530,6 +550,9 @@ void draw(){
         }
         break;
       case SETTINGS:
+        if(rememberedState == State.MENU)
+          audioController.playLoopSounds();
+
         // Menu
         audioController.update();
         settingsUIController.draw();
@@ -832,6 +855,7 @@ class ResourcesLoader {
     Thread thread = new Thread(new Runnable(){
       @Override    
       public void run(){
+        // audioController.stopPlayers();
         //readConfig();
         main = new Main(state);
         isLoaded = true;
@@ -845,6 +869,7 @@ class ResourcesLoader {
     Thread thread = new Thread(new Runnable(){
       @Override    
       public void run(){
+        audioController.stopPlayers();
         //readConfig();
         main = new Main();
         isLoaded = true;

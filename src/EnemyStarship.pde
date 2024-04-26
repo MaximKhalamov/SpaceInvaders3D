@@ -5,7 +5,7 @@ float ENEMY_BULLET_SPEED_X = 0;
 float ENEMY_BULLET_SPEED_Y = 0;
 float ENEMY_BULLET_SPEED_Z = - 50.0f;
 float ENEMY_BULLET_RADIUS = 5.0f;
-int ENEMY_BULLET_LIFE_TIME = 50;
+int ENEMY_BULLET_LIFE_TIME = 150;
 int ENEMY_DAMAGE = 10;
 
 class EnemyStarship extends Starship{  

@@ -197,9 +197,9 @@ if(JAVA){
     int playerShield = starship.getShield();
     int playerHealth = starship.getHealth();
   
-    String uiHealthBar = "  " + playerHealth;
-    String uiShieldBar = "  " + playerShield;
-    String uiEnemiesKilled = "  " + enemyKilled;
+    String uiHealthBar = "       " + playerHealth;
+    String uiShieldBar = "       " + playerShield;
+    String uiEnemiesKilled = "       " + enemyKilled;
     //String uiEnemiesLeft = "Left: " + getEnemiesNumber();
     
     pushMatrix();
@@ -210,7 +210,7 @@ if(JAVA){
     fill(255, 255, 255);
     textAlign(LEFT, CENTER);
     //text(uiEnemiesLeft + "\n" + uiEnemiesKilled, - x - 1.9 * width, - 1.8 * height + y, - 2 * height);
-    text(uiEnemiesKilled, - x - 1.9 * width, - 1.8 * height + y, - 2 * height);
+    text(uiEnemiesKilled, height / 5. - x - 1.9 * width, - 1.8 * height + y, - 2 * height);
     drawIcon(DEAD_ICON, - x - 1.9 * width, - 1.8 * height + y, - 2 * height, height / 5., height / 5.);
 
     drawIcon(HEALTH_ICON, - x - 1.9 * width, + 1.8 * height + y, - 2 * height, height / 5., height / 5.);
@@ -219,8 +219,8 @@ if(JAVA){
     if(playerHealth < 20)
       fill(225, 0, 0);
     
-    text(uiHealthBar, - x - 1.9 * width, + 1.8 * height + y, - 2 * height);
-    text(uiShieldBar, - x - 1.4 * width, + 1.8 * height + y, - 2 * height);    
+    text(uiHealthBar, height / 5. - x - 1.9 * width, + 1.8 * height + y, - 2 * height);
+    text(uiShieldBar, height / 5. - x - 1.4 * width, + 1.8 * height + y, - 2 * height);    
 
     displayTimer(timeBoss, x, y, z);
     displayBestScore(x, y, z);
@@ -246,14 +246,14 @@ if(ANDROID){
     fill(255, 255, 255);
     textAlign(LEFT, CENTER);
     //text(uiEnemiesLeft + "\n" + uiEnemiesKilled, - x - 1.9 * width, - 1.8 * height + y, - 2 * height);
-    text(uiEnemiesKilled, - x - 0.1 * width, - 1.7 * height + y, - 2 * height);
+    text(uiEnemiesKilled, height / 5. - x - 0.1 * width, - 1.7 * height + y, - 2 * height);
     drawIcon(DEAD_ICON, - x - 0.1 * width, - 1.7 * height + y, - 2 * height, height / 10., height / 10.);
 
     if(playerHealth < 20)
       fill(225, 0, 0);
     
-    text(uiHealthBar, - x - 1.8 * width, - 1.7 * height + y, - 2 * height);
-    text(uiShieldBar, - x - 1.4 * width, - 1.7 * height + y, - 2 * height);    
+    text(uiHealthBar, height / 5. - x - 1.8 * width, - 1.7 * height + y, - 2 * height);
+    text(uiShieldBar, height / 5. - x - 1.4 * width, - 1.7 * height + y, - 2 * height);    
 
     fill(255, 255, 255);
     drawIcon(HEALTH_ICON, - x - 1.8 * width, - 1.7 * height + y, - 2 * height, height / 10., height / 10.);

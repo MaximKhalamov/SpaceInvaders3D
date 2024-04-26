@@ -15,6 +15,8 @@ def main():
     copy_dir("./assets", DEST_ANDROID_DIRECTORY + "/data")
     copy_dir("./assets", DEST_JAVA_DIRECTORY + "/assets")
 
+    copy_dir("./data", DEST_ANDROID_DIRECTORY + "/data")
+    copy_dir("./data", DEST_JAVA_DIRECTORY + "/data")
     preprocess()
 
     # --variant is broken?
@@ -23,7 +25,8 @@ def main():
     shutil.copy(SRC_DIRECTORY + "/javaClasses/config.properties", DEST_JAVA_DIRECTORY + "/windows-amd64/config.properties")
     copy_dir("./assets", DEST_JAVA_DIRECTORY + "/windows-amd64/assets")
 
-    shutil.rmtree("./windows-amd64/")
+    if os.path.isdir('./windows-amd64/'):
+        shutil.rmtree("./windows-amd64/")
     shutil.move(DEST_JAVA_DIRECTORY + "/windows-amd64", "./")
 
 

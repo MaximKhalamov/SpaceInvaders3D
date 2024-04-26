@@ -13,15 +13,16 @@ class AudioController{
   boolean isLooped = false;
   boolean isPlayable;
   
+  int number = 0;
+
   boolean started;
   
-  //private MediaPlayer startSound;
-  //private MediaPlayer loopSound;
+  private MediaPlayer mainTheme;
+
   private MediaPlayer music;
 
-  //private MediaPlayer explosionSound;
-  //private MediaPlayer damageSound;
-  
+  private List<MediaPlayer> musics;
+
   private List<SoundFile> damageSounds;
   private List<SoundFile> shotSounds;
   
@@ -30,38 +31,25 @@ class AudioController{
   private int THREAD_NUMBER = 20;
   
   public void update(){
-    if(isMusicOn){
-      music.setVolume(1,1);
-    } else {
-      music.setVolume(0,0);
+    if(music != null){
+      if(isMusicOn) music.setVolume(1,1); else music.setVolume(0,0);
     }
-    
-    //if(isSoundOn){
-    //  loopSound.setVolume(1,1);
-    //  startSound.setVolume(1,1);
-    //} else {
-    //  loopSound.setVolume(0,0);
-    //  startSound.setVolume(0,0);
-    //}
+    if(mainTheme != null){
+      if(isMusicOn) mainTheme.setVolume(1,1); else mainTheme.setVolume(0,0);
+    }
   }
 
   public AudioController(){
     isPlayable = true;
-    //startSound = getPlayer(SOUND_FLYING_START_PATH);    
-    
-    //loopSound = getPlayer(SOUND_FLYING_LOOP_PATH);
-    //loopSound.setLooping(true);
-    
-    music = getPlayer(MUSIC_BACKGROUND_PATH);
-    music.setLooping(true);
+    musics = new ArrayList<>();
 
-    //music MUSIC_BACKGROUND_PATH);
+    mainTheme = getPlayer(MUSIC_MAIN_THEME);
 
-    //explosionSound = getPlayer(SOUND_EXPLOSION_PATH);
-    //damageSounds = getPlayer(SOUND_DAMAGE_PATH);
-    
-    //explosionSound.play();
-    //damageSound.play();
+    mainTheme.setLooping(true);
+
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH1));
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH2));
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH3));
     
     shotSounds = new ArrayList<>();
     for(int i = 0; i < THREAD_NUMBER; i++){
@@ -72,6 +60,7 @@ class AudioController{
     for(int i = 0; i < THREAD_NUMBER; i++){
       damageSounds.add(new SoundFile(SIA, SOUND_DAMAGE_PATH));
     }
+    mainTheme.start();
   }
   
   private File createTempFile(InputStream inputStream) throws IOException {
@@ -110,26 +99,33 @@ class AudioController{
   
   public void stopPlayers(){
     try{
-      //startSound.pause();
-      //if(isLooped)
-        //loopSound.pause();
+      music.seekTo(0);
       music.pause();
-      //explosionSound.pause();
-      //damageSound.pause();
-
+      mainTheme.pause();
     }catch(NullPointerException e){
-      println("ok and?");
+
     }
         
+  }
+  
+  private MediaPlayer getRandomAudioPlayer(MediaPlayer mp){
+    number = (number + 1) % musics.size();
+    return musics.get(number);
   }
 
   public void continuePlayers(){
     try{      
-      //startSound.start();
-      //loopSound.start();
+      if(music == null)
+        music = getRandomAudioPlayer(music);
+      else if(!music.isPlaying()){
+        music.pause();
+        music.seekTo(0);
+        music = getRandomAudioPlayer(music);
+      }
+
       music.start();
+      mainTheme.start();
     }catch(NullPointerException e){
-      println("ok and?");
     }
         
   }
@@ -162,16 +158,30 @@ class AudioController{
   }
   
   public void playLoopSounds(){
-    if(isPlayable)
-    if(!started){
+    // if(isPlayable)
+    // if(!started){
+    //   music.start();
+    //   //startSound.start();
+    //   started = true;
+    // } else if(!isLooped){
+    // //} else if(!startSound.isPlaying() && !isLooped){
+    // //} else if(!isLooped){
+    //   isLooped = true;
+    //   //loopSound.start();
+    // }
+    try{      
+      if(music == null)
+        music = getRandomAudioPlayer(music);
+      else if(!music.isPlaying()){
+        music.pause();
+        music.seekTo(0);
+        music = getRandomAudioPlayer(music);
+      }
+
+      mainTheme.start();
       music.start();
-      //startSound.start();
-      started = true;
-    } else if(!isLooped){
-    //} else if(!startSound.isPlaying() && !isLooped){
-    //} else if(!isLooped){
-      isLooped = true;
-      //loopSound.start();
+      // mainTheme.pause();
+    }catch(NullPointerException e){
     }
   }
   
@@ -185,7 +195,12 @@ class AudioController{
     //}else{
 
     //}
-    if(isStopMusic)
-      music.stop();
+  //   if(isStopMusic)
+  //     music.stop();
+  }
+
+  public void playTheme(){
+      if(mainTheme != null)
+        mainTheme.start();    
   }
 }

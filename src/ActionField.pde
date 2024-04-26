@@ -297,12 +297,15 @@ class ActionField{
         uiInfo.displayScreen(color(0,0,0, 180), translation.get("cleared"), color(95,85,149));
         clearedTiming--;
         if(clearedTiming == 0){
+          if(planets.get(currentLevel + 1).getBossStatus() && regime == Regime.CPG)
+            avp.playVideo("cutscene2");
           state = ActionFieldState.INIT;
           timeBoss = - 1;
           return Signal.SWITCH;
         }
         return Signal.CONTINUE;
       case BOSS_TIMING:
+        displayAllEnemies();
         displayAll();
         uiInfo.displayScreen(color(0,0,0, 180), translation.get("destroyin2min"), color(235,38,38));
         bossDestroyTiming--;
@@ -340,7 +343,7 @@ class ActionField{
       case VICTORY:
         displayAll();
         uiInfo.displayScreen(color(0,0,0, 180), translation.get("youwin"), color(102,185,42), enemyKilled);
-        audioController.stopPlayers();
+        // audioController.stopPlayers();
         if(isTouchable == false && !pressed)
           isTouchable = true;
 
@@ -356,7 +359,7 @@ class ActionField{
       case GAMEOVER:
         uiInfo.displayScreen(color(0,0,0, 180), translation.get("gameover"), color(115,41,25), enemyKilled);
         //audioController.stopLoopSounds(true);
-        audioController.stopPlayers();
+        // audioController.stopPlayers();
         
         if(isTouchable == false && !pressed)
           isTouchable = true;
@@ -372,6 +375,7 @@ class ActionField{
         return Signal.CONTINUE;
 
       case RESTART:
+        audioController.stopPlayers();
         if(JAVA){
           inGame = false;
           cursor();
@@ -413,7 +417,7 @@ class ActionField{
     
     audioController.playLoopSounds();
 
-    ////Enemy collision check    
+    //Enemy collision check    
     waveList = enemies.get(0);
     Iterator<Starship> enemyIterator = waveList.iterator();
     while(enemyIterator.hasNext()){
@@ -479,6 +483,10 @@ class ActionField{
           bulletIterator.remove();
           continue;
         }
+        if(bullet.getVelZ() > 0)
+          continue;
+        if(bullet.getPosZ() < -PLAYER_COLLISION_R / 2 || bullet.getPosZ() > PLAYER_COLLISION_R / 2)
+          continue;
         if(bullet.checkCollision(mainStarship)){
           audioController.playOnceDamage();
           redScreenTiming = 4;
