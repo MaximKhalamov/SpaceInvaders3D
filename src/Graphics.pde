@@ -138,7 +138,7 @@ class UIInfo{
       text(translation.get("best") + "\n" + bestScore, - x + 1.6 * width, - 1.8 * height + y, - 2 * height);
     }
     if(ANDROID){
-      text(translation.get("best") + "\n" + bestScore, - x + 1.6 * width, - 1.4 * height + y, - 2 * height);
+      text(translation.get("best") + "\n" + bestScore, - x + 1.6 * width + height * 0.05, - 1.4 * height + y, - 2 * height);
     }
   }
 
@@ -290,8 +290,8 @@ class ShaderController{
   private boolean isReversed = false;
 
   private float[][] valuesHSV = {
-    {0.64, 1.00, 0.30},  // 8-1 transition
-    {0.64, 1.00, 0.30},  // 1st level
+    {0.10, 0.50, 0.60},  // 8-1 transition
+    {0.10, 0.50, 0.60},  // 1st level
 
     {0.09, 0.15, 0.40}, // 1-2 transition
     {0.09, 0.15, 0.40}, // 2nd level

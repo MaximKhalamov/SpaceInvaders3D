@@ -99,9 +99,9 @@ class AudioController{
   
   public void stopPlayers(){
     try{
+      mainTheme.pause();
       music.seekTo(0);
       music.pause();
-      mainTheme.pause();
     }catch(NullPointerException e){
 
     }

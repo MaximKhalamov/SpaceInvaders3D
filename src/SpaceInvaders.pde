@@ -785,8 +785,8 @@ class SettingsController{
   
   public SettingsController(){
     sensitivitySlider = new UIElementSlider(sensitivity, 0.5, 2.0, width / 4, "sensitivity", width / 2, 5 * height / 7);
-    soundController = new UIRadioButton(isSoundOn, "sound", width / 2, 4 * height / 14);
-    musicController = new UIRadioButton(isMusicOn, "music", width / 2, 6 * height / 14);
+    soundController = new UIRadioButton(isSoundOn, "sound", 3*width / 7, 4 * height / 14);
+    musicController = new UIRadioButton(isMusicOn, "music", 3*width / 7, 6 * height / 14);
     List<String> langs = new ArrayList<>();
     langs.add("EN");
     langs.add("RU");

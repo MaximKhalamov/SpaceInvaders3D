@@ -186,6 +186,7 @@ class UIRadioButton extends UIElement{
   private boolean isChosen = true;
   private String name;
   private float elementLen;
+  private float sw = height / 10.;
   public UIRadioButton(boolean value, String name, float xScreen, float yScreen){
     this.value = value;
     this.name = name;
@@ -211,7 +212,7 @@ class UIRadioButton extends UIElement{
       translate(-2 * width, - 2 * height, - 2 * height);
       
       if(JAVA){
-        color clr = abs(mouseX - getXScreen()) < elementLen / 2 && abs(mouseY - getYScreen()) < height / 20 ? color(245, 194, 225, 160) : color(255, 255, 255, 160);
+        color clr = abs(mouseX + sw / 2 - getXScreen() - elementLen / 2) < elementLen / 2 && abs(mouseY - getYScreen()) < height / 20 ? color(245, 194, 225, 160) : color(255, 255, 255, 160);
       }
       if(ANDROID){
         color clr = getIsSelected() ? color(245, 194, 225, 160) : color(255, 255, 255, 160);
@@ -226,29 +227,32 @@ class UIRadioButton extends UIElement{
       
       String displayedText = new String("" + text);
       float textLen = textWidth(displayedText);
-      float sw = height / 10.;
+      
       float totalLen = textLen + sw * displayDensity;
       
       totalLen /= displayDensity;
       elementLen = totalLen;
 
       //rect(screenToXRel(getXScreen() - totalLen / 2), screenToYRel(getYScreen() - size / 2), screenToXRel(totalLen), screenToYRel(size));
-      rect(screenToXRel(getXScreen() - totalLen / 2), screenToYRel(getYScreen() - sw / 2), MULTIPLIER_SCREEN * (sw), MULTIPLIER_SCREEN * (sw));
+      rect(screenToXRel(getXScreen() - sw / 2), 
+                        screenToYRel(getYScreen() - sw / 2), 
+                        MULTIPLIER_SCREEN * (sw), 
+                        MULTIPLIER_SCREEN * (sw));
       
       
       float offset = sw / 10;
       
       fill(0);
-      rect(screenToXRel(getXScreen() - totalLen / 2 + offset ), screenToYRel(getYScreen() - sw / 2 + offset), MULTIPLIER_SCREEN * (sw - 2 * offset), MULTIPLIER_SCREEN * (sw - 2 * offset));
+      rect(screenToXRel(getXScreen() - sw / 2 + offset ), screenToYRel(getYScreen() - sw / 2 + offset), MULTIPLIER_SCREEN * (sw - 2 * offset), MULTIPLIER_SCREEN * (sw - 2 * offset));
 
       if(value){
         fill(clr);
-        rect(screenToXRel(getXScreen() - totalLen / 2 + 2 * offset ), screenToYRel(getYScreen() - sw / 2 + 2 * offset), MULTIPLIER_SCREEN * (sw - 4 * offset), MULTIPLIER_SCREEN * (sw - 4 * offset));
+        rect(screenToXRel(getXScreen() - sw / 2 + 2 * offset ), screenToYRel(getYScreen() - sw / 2 + 2 * offset), MULTIPLIER_SCREEN * (sw - 4 * offset), MULTIPLIER_SCREEN * (sw - 4 * offset));
       }
       
-      textAlign(RIGHT, CENTER);
+      textAlign(LEFT, CENTER);
       fill(clr);
-      text(text, screenToXRel(getXScreen() + totalLen / 2), screenToYRel(getYScreen()), 0);
+      text(text, screenToXRel(getXScreen() + sw), screenToYRel(getYScreen()), 0);
       
       popMatrix();
       hint(ENABLE_DEPTH_TEST);
@@ -260,7 +264,7 @@ class UIRadioButton extends UIElement{
   
   @Override  
   public boolean isSelected(float xScreen, float yScreen){ 
-    setIsSelected(abs(xScreen - getXScreen()) < elementLen / 2 && abs(yScreen - getYScreen()) < height / 20);
+    setIsSelected(abs(xScreen - getXScreen() + sw / 2 - elementLen / 2) < elementLen / 2 && abs(yScreen - getYScreen()) < height / 20);
     //setIsSelected(dist(getXScreen(), getYScreen(), xScreen, yScreen) < radius);
     //controlIsFire = getIsSelected();
     if(getIsSelected()){

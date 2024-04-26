@@ -21,7 +21,6 @@ class AppVideoPlayer{
           prepareVideoPlayer("video/18x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/18x9_02.mp4", "cutscene2");
         }
-        //prepareVideoPlayer("nekoarc.mp4", "nekoarc");
     }
 
     public void playVideo(String name) {

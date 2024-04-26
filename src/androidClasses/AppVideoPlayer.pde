@@ -66,7 +66,7 @@ class AppVideoPlayer{
           MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
           metaRetriever.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
           String height = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT); 
-          metaRetriever.close();
+          // metaRetriever.close();
           if (int(height) < 2) {
             throw new IOException();
           }
@@ -89,55 +89,56 @@ class AppVideoPlayer{
               mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
               surfaceHolder = surfaceView.getHolder();
               surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-              mediaPlayer.prepare();
-              activity.addContentView(surfaceView, new ViewGroup.LayoutParams(width, height));
-              if (mediaPlayer.isPlaying() == false) {
-                isPlaying = false;
-                mediaPlayer.start();
+              mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+              @Override
+              public void onPrepared(MediaPlayer mp) {
+                  // MediaPlayer is prepared, you can start playback or perform other operations
+                Thread timer = new Thread(new Runnable(){
+                  private boolean isRewinded = false;
+
+                  @Override    
+                  public void run(){
+                    try{
+                      Thread.sleep(1);
+                      while(true){
+                        try{
+                          // if(isPlaying)
+                          //   continue;
+                          if(!isRewinded){
+                            mediaPlayer.seekTo(0);
+                            isRewinded = true;
+                          }
+                          if (videoPlaying && mediaPlayer.getCurrentPosition() >= mediaPlayer.getDuration()){
+                            isKillable = true;
+                            break;
+                          }
+                        } catch(IllegalStateException e){
+                        } catch(NullPointerException e){
+                      }
+                    }
+                    }catch(InterruptedException e){
+                      e.printStackTrace();
+                    }
+                  }
+                });
+                timer.start();
               }
-            }
-          catch (IllegalArgumentException e) { e.printStackTrace(); }
-          catch (IllegalStateException e) { e.printStackTrace(); } 
-          catch (IOException e) { e.printStackTrace(); }
-          }
-        }
-      );
-
-      Thread timer = new Thread(new Runnable(){
-        private boolean isRewinded = false;
-
-        @Override    
-        public void run(){
-          try{
-            Thread.sleep(500);
-            while(true){
-              try{
-                // if(isPlaying)
-                //   continue;
-                if(!isRewinded){
-                  mediaPlayer.seekTo(0);
-                  isRewinded = true;
-                }
-
-                // if(mediaPlayer.getCurrentPosition() < 3000)
-                //   println("mediaPlayer.getCurrentPosition(): " + mediaPlayer.getCurrentPosition() + "\tmediaPlayer.getDuration(): " + mediaPlayer.getDuration());
-                if (videoPlaying && mediaPlayer.getCurrentPosition() >= mediaPlayer.getDuration()){
-                  isKillable = true;
-                  break;
-                }
-              } catch(IllegalStateException e){
-                // e.printStackTrace();
-              } catch(NullPointerException e){
-                // cry about it
-              }
-            }
-          }catch(InterruptedException e){
-            e.printStackTrace();
-          }
-        }
       });
-    timer.start();
+      mediaPlayer.prepare();
+      activity.addContentView(surfaceView, new ViewGroup.LayoutParams(width, height));
+      if (mediaPlayer.isPlaying() == false) {
+        isPlaying = false;
+        mediaPlayer.start();
+      }
+      }
+    catch (IllegalArgumentException e) { e.printStackTrace(); }
+    catch (IllegalStateException e) { e.printStackTrace(); } 
+    catch (IOException e) { e.printStackTrace(); }
     }
+    });
+
+
+  }
 
     public boolean isStoppedPlaying(){
       if(isKillable){
@@ -150,7 +151,8 @@ class AppVideoPlayer{
           @Override
           public void run() {
             ((ViewGroup) surfaceView.getParent()).removeView(surfaceView);
-            prepareVideoPlayer("video/CampaignCutscene_01.mp4", "cutscene1");
+            prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
+            prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
           }
         });
       }
