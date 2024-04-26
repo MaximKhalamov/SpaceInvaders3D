@@ -35,12 +35,14 @@ class AppVideoPlayer{
         context = activity.getApplicationContext();
         afds = new HashMap<>();
         
-        if( abs(width / height - 16. / 9.) < abs(width / height - 2)){
+        if( abs(width / height < 17. / 9.)){
           prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
+          prepareVideoPlayer("video/16x9_03.mp4", "cutscene3");
         }else{
           prepareVideoPlayer("video/18x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/18x9_02.mp4", "cutscene2");
+          prepareVideoPlayer("video/18x9_03.mp4", "cutscene3");
         }
         
         surfaceView = new SurfaceView(activity);
@@ -151,8 +153,15 @@ class AppVideoPlayer{
           @Override
           public void run() {
             ((ViewGroup) surfaceView.getParent()).removeView(surfaceView);
-            prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
-            prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
+            if( abs(width / height < 17. / 9.)){
+              prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
+              prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
+              prepareVideoPlayer("video/16x9_03.mp4", "cutscene3");
+            }else{
+              prepareVideoPlayer("video/18x9_01.mp4", "cutscene1");
+              prepareVideoPlayer("video/18x9_02.mp4", "cutscene2");
+              prepareVideoPlayer("video/18x9_03.mp4", "cutscene3");
+            }
           }
         });
       }

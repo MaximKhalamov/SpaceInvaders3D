@@ -341,6 +341,7 @@ class ActionField{
           return Signal.CONTINUE;   
         }
       case VICTORY:
+        endlessAvaliable = true;
         displayAll();
         uiInfo.displayScreen(color(0,0,0, 180), translation.get("youwin"), color(102,185,42), enemyKilled);
         // audioController.stopPlayers();
@@ -352,6 +353,8 @@ class ActionField{
           
         if(pressed){
           isTouchable = false;
+          if(regime == Regime.CPG)
+            avp.playVideo("cutscene3");
           state = ActionFieldState.RESTART;
         }
 
@@ -455,9 +458,18 @@ class ActionField{
                 effects.add( new ExplosionEffect( enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), enemy instanceof BossStarship ) );
                 enemyIterator.remove();
                 enemyKilled++;
-                if(enemyKilled > bestScore){
-                  bestScore = enemyKilled;
-                  updateBestScore();
+                if(regime == Regime.CPG){
+                  if(enemyKilled > bestScoreCPG){
+                    bestScoreCPG = enemyKilled;
+                    updateBestScore();
+                  }
+                }
+
+                if(regime == Regime.INF){
+                  if(enemyKilled > bestScoreINF){
+                    bestScoreINF = enemyKilled;
+                    updateBestScore();
+                  }
                 }
               }; 
               break;      

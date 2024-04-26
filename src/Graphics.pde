@@ -134,6 +134,14 @@ class UIInfo{
   public void displayBestScore(float x, float y, float z){
     textAlign(CENTER, UP);
     fill(255, 255, 255);
+
+    int bestScore = 0;
+
+    if(regime == Regime.CPG)
+      bestScore = bestScoreCPG;
+    if(regime == Regime.INF)
+      bestScore = bestScoreINF;
+
     if(JAVA){
       text(translation.get("best") + "\n" + bestScore, - x + 1.6 * width, - 1.8 * height + y, - 2 * height);
     }

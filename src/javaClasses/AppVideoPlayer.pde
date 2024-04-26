@@ -14,12 +14,14 @@ class AppVideoPlayer{
         sounds = new HashMap<>();  
         this.papplet = papplet;
         minim = new Minim(papplet);
-        if( abs(width / height - 16. / 9.) < abs(width / height - 2)){
+        if( abs(width / height < 17. / 9.)){
           prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
+          prepareVideoPlayer("video/16x9_03.mp4", "cutscene3");
         }else{
           prepareVideoPlayer("video/18x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/18x9_02.mp4", "cutscene2");
+          prepareVideoPlayer("video/18x9_03.mp4", "cutscene3");
         }
     }
 
@@ -47,7 +49,6 @@ class AppVideoPlayer{
         
         Movie m = movies.get(plaingVideoName);
           if (m.time() > m.duration() - 0.2) {
-            println("OaoaaoOaoaaoOaoaaoOaoaaoOaoaao");
             stopPlaying();
             return true;
           }        

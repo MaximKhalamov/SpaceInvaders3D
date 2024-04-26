@@ -67,6 +67,7 @@ String RELATIVE_PATH = "/home/max/sketchbook/SpaceInvaders/";
 // --------------------------------------- END CUSTOMIZABLE ---------------------------------------
 
 // --------------------------------------- BETTER DO NOT TOUCH ---------------------------------------
+boolean endlessAvaliable;
 if(JAVA){
 boolean inGame;
 float displayDensity = 2;
@@ -102,7 +103,8 @@ float rx, ry, rz;
 boolean isGlobalController = true;
 
 int timeBoss = -1;
-int bestScore;
+int bestScoreCPG;
+int bestScoreINF;
 // These vars are overrided so you can use any number
 int HEIGHT = 0;
 int WIDTH = 0;
@@ -467,7 +469,7 @@ void draw(){
           avp.playVideo("cutscene1");
         }
         // Infinite
-        if(startController.getState(1)){
+        if(startController.getState(1) && endlessAvaliable){
           regime = Regime.INF;
           main.changeState(State.ACTIONFIELD);
           if(JAVA){
@@ -670,18 +672,22 @@ if(JAVA){
     isMusicOn = Boolean.parseBoolean(prop.getProperty("IS_MUSIC_ON"));
     language = prop.getProperty("LANGUAGE");
 
-    bestScore = Integer.parseInt(prop.getProperty("BEST_SCORE"));
-
+    bestScoreCPG = Integer.parseInt(prop.getProperty("BEST_SCORE_CPG"));
+    bestScoreINF = Integer.parseInt(prop.getProperty("BEST_SCORE_INF"));
+    endlessAvaliable = Boolean.parseBoolean(prop.getProperty("ENDLESS_AVALIABLE"));
   }
 }
 
 void updateBestScore(){
   if(ANDROID){
-    editor.putString("BEST_SCORE","" + bestScore);
-    editor.commit();
+    if(regime == Regime.CPG)
+      editor.putString("BEST_SCORE_CPG","" + bestScoreCPG);
+    if(regime == Regime.INF)
+      editor.putString("BEST_SCORE_INF","" + bestScoreINF);
   }  
   if(JAVA){
-    prop.setProperty("BEST_SCORE","" + bestScore);
+    prop.setProperty("BEST_SCORE_CPG","" + bestScoreCPG);
+    prop.setProperty("BEST_SCORE_INF","" + bestScoreINF);
     try{
       File configFile = new File(sketchPath("config.properties"));
       prop.store(new FileWriter(configFile), "config");
@@ -762,8 +768,10 @@ if(ANDROID){
     
     language = sharedPreferences.getString("LANGUAGE", "EN");
 
-    bestScore = Integer.parseInt(sharedPreferences.getString("BEST_SCORE", "0"));
-
+    bestScoreCPG = Integer.parseInt(sharedPreferences.getString("BEST_SCORE_CPG", "0"));
+    bestScoreINF = Integer.parseInt(sharedPreferences.getString("BEST_SCORE_INF", "0"));
+    endlessAvaliable = Boolean.parseBoolean(sharedPreferences.getString("ENDLESS_AVALIABLE", "false"));
+    
   }
 }
 
