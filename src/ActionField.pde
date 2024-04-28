@@ -60,7 +60,7 @@ class ActionField{
 
   private float camInitX = 0, camInitY = -18, camInitZ = -48;
   private float easing = 0.09;
-  private Timer timer;
+  private MyTimer timer;
 
   //private float tx = WIDTH / 2;
   //private float ty = HEIGHT / 2;
@@ -555,7 +555,7 @@ class ActionField{
     uiInfo.display(cam.getX(), cam.getY(), cam.getZ());
 
     if(enemies.isEmpty()){
-        timer = new Timer(1000);
+        timer = new MyTimer(1000);
         
         timer.start();
         state = ActionFieldState.WAIT_FOR_SCREEN;

@@ -14,7 +14,7 @@ class AppVideoPlayer{
         sounds = new HashMap<>();  
         this.papplet = papplet;
         minim = new Minim(papplet);
-        if( abs(width / height < 17. / 9.)){
+        if( width / height < 17. / 9.){
           prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
           prepareVideoPlayer("video/16x9_03.mp4", "cutscene3");

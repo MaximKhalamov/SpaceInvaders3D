@@ -11,7 +11,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ListIterator;
-
+import java.util.TimerTask;
+import java.util.Timer;
 
 if(JAVA){
 import ddf.minim.*;
@@ -949,11 +950,11 @@ if(JAVA){
   }
 }
 
-class Timer extends Thread{
+class MyTimer extends Thread{
   private volatile boolean isInt = false;
   private long msecs;
   
-  public Timer(long msecs){
+  public MyTimer(long msecs){
       this.msecs = msecs;
   }        
           

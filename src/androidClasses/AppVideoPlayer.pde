@@ -10,6 +10,9 @@ import android.media.MediaMetadataRetriever;
 import android.content.Context;
 import android.view.ViewGroup;
 import android.content.Intent;
+import android.os.Looper;
+import java.util.TimerTask;
+import java.util.Timer;
 
 class VideoPlayer{
     public String name;
@@ -17,25 +20,25 @@ class VideoPlayer{
 }
 
 class AppVideoPlayer{
-    private boolean videoPlaying = false;
-    private volatile boolean isKillable = false;
     private volatile boolean isStoppedPlaying = true;
+    private volatile boolean isKillable = false;
 
     private Activity activity;
     private Context context;
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
     private MediaPlayer mediaPlayer;
     private Map<String, AssetFileDescriptor> afds;
-    private volatile boolean isPlaying = true;
-
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
 
     public AppVideoPlayer(Activity activity){
+
         this.activity = activity;
         context = activity.getApplicationContext();
         afds = new HashMap<>();
-        
-        if( abs(width / height < 17. / 9.)){
+        Looper.prepare();
+        mediaPlayer = new MediaPlayer();
+
+        if( width / height < 17. / 9.){
           prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
           prepareVideoPlayer("video/16x9_03.mp4", "cutscene3");
@@ -44,22 +47,22 @@ class AppVideoPlayer{
           prepareVideoPlayer("video/18x9_02.mp4", "cutscene2");
           prepareVideoPlayer("video/18x9_03.mp4", "cutscene3");
         }
-        
+      
         surfaceView = new SurfaceView(activity);
-        surfaceView.setZOrderOnTop(true) ;
+        surfaceView.setZOrderOnTop(true);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceHolder.addCallback(new SurfaceHolder.Callback() {
           public void surfaceCreated(SurfaceHolder surfaceHolder) {
             mediaPlayer.setDisplay(surfaceHolder);
           }
-      
           public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
             mediaPlayer.setDisplay(surfaceHolder);
           }
-      
-          public void surfaceDestroyed(SurfaceHolder surfaceHolder) {}
-        });
+          public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+          }
+        }
+  );
     }
 
     private void prepareVideoPlayer(String fileName, String name) {
@@ -68,7 +71,7 @@ class AppVideoPlayer{
           MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
           metaRetriever.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
           String height = metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT); 
-          // metaRetriever.close();
+          //metaRetriever.close();
           if (int(height) < 2) {
             throw new IOException();
           }
@@ -80,88 +83,43 @@ class AppVideoPlayer{
     }
 
     public void playVideo(String name) {
-      isPlaying = true;
       isStoppedPlaying = false;
-      videoPlaying = true;
+      mediaPlayer = new MediaPlayer();
+      AssetFileDescriptor afd = afds.get(name);
       activity.runOnUiThread(new Runnable() {
-          public void run() {
-            try {
-              mediaPlayer = new MediaPlayer();
-              AssetFileDescriptor afd = afds.get(name);
-              mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-              surfaceHolder = surfaceView.getHolder();
-              surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-              mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-              @Override
-              public void onPrepared(MediaPlayer mp) {
-                  // MediaPlayer is prepared, you can start playback or perform other operations
-                Thread timer = new Thread(new Runnable(){
-                  private boolean isRewinded = false;
-
-                  @Override    
-                  public void run(){
-                    try{
-                      Thread.sleep(1);
-                      while(true){
-                        try{
-                          // if(isPlaying)
-                          //   continue;
-                          if(!isRewinded){
-                            mediaPlayer.seekTo(0);
-                            isRewinded = true;
-                          }
-                          if (videoPlaying && mediaPlayer.getCurrentPosition() >= mediaPlayer.getDuration()){
-                            isKillable = true;
-                            break;
-                          }
-                        } catch(IllegalStateException e){
-                        } catch(NullPointerException e){
-                      }
-                    }
-                    }catch(InterruptedException e){
-                      e.printStackTrace();
-                    }
-                  }
-                });
-                timer.start();
+        public void run() {
+          try {
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            surfaceHolder = surfaceView.getHolder();
+            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+            mediaPlayer.prepare();
+            activity.addContentView(surfaceView, new ViewGroup.LayoutParams(width, height));
+            // if (mediaPlayer.isPlaying() == false) {
+            mediaPlayer.start();
+            new Timer().schedule(new TimerTask() {
+            @Override
+              public void run() {
+               isKillable = true;
               }
-      });
-      mediaPlayer.prepare();
-      activity.addContentView(surfaceView, new ViewGroup.LayoutParams(width, height));
-      if (mediaPlayer.isPlaying() == false) {
-        isPlaying = false;
-        mediaPlayer.start();
-      }
-      }
-    catch (IllegalArgumentException e) { e.printStackTrace(); }
-    catch (IllegalStateException e) { e.printStackTrace(); } 
-    catch (IOException e) { e.printStackTrace(); }
+            }, mediaPlayer.getDuration());
+            //}
+          }catch (IllegalArgumentException e) { e.printStackTrace(); }
+          catch (IllegalStateException e) { e.printStackTrace(); } 
+          catch (IOException e) { e.printStackTrace(); }
+          }
+        }
+      );      
     }
-    });
-
-
-  }
 
     public boolean isStoppedPlaying(){
       if(isKillable){
         isKillable = false;
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        //print("KILL!");
+        print("KILL!");
         isStoppedPlaying = true;
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            ((ViewGroup) surfaceView.getParent()).removeView(surfaceView);
-            if( abs(width / height < 17. / 9.)){
-              prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
-              prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
-              prepareVideoPlayer("video/16x9_03.mp4", "cutscene3");
-            }else{
-              prepareVideoPlayer("video/18x9_01.mp4", "cutscene1");
-              prepareVideoPlayer("video/18x9_02.mp4", "cutscene2");
-              prepareVideoPlayer("video/18x9_03.mp4", "cutscene3");
-            }
+            ((ViewGroup) surfaceView.getParent()).removeView(surfaceView);    
           }
         });
       }
