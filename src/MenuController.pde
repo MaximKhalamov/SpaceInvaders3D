@@ -30,6 +30,7 @@ class UIButton extends UIElement{
   private float lx, ly;
   protected String text;
   private String buttonName;
+  private boolean isBlocked;
   
   public UIButton(float xScreen, float yScreen, float lx, float ly, String buttonName){
     setXScreen(xScreen);
@@ -37,6 +38,7 @@ class UIButton extends UIElement{
     this.lx = lx;
     this.ly = ly;
     this.buttonName = buttonName;
+    isBlocked = false;
   }
   
   @Override
@@ -46,11 +48,15 @@ class UIButton extends UIElement{
     resetMatrix();
     translate(-2 * width, - 2 * height, - 2 * height);
     
+    color colorSelected = color(245, 194, 225, 160);
+    color colorBlocked = color(127, 127, 127, 160);
+    color colorDefault = color(255, 255, 255, 160);
+
     if(ANDROID){
-    color clr = getIsSelected() ? color(245, 194, 225, 160) : color(255, 255, 255, 160);
+    color clr = isBlocked ? colorBlocked : (getIsSelected() ? colorSelected : colorDefault );
     }
     if(JAVA){
-    color clr = abs(mouseX - getXScreen()) < lx / 2 && abs(mouseY - getYScreen()) < ly / 2 ? color(245, 194, 225, 160) : color(255, 255, 255, 160);
+    color clr = isBlocked ? colorBlocked : (abs(mouseX - getXScreen()) < lx / 2 && abs(mouseY - getYScreen()) < ly / 2 ? colorSelected : colorDefault );
     }
     fill(clr);
     noStroke();
@@ -115,6 +121,14 @@ class UIButton extends UIElement{
   
   public float getLY(){
     return ly;
+  }
+
+  public void block(){
+    isBlocked = true;
+  }
+
+  public void unblock(){
+    isBlocked = false;
   }
 }
 

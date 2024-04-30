@@ -54,6 +54,9 @@ class Translation{
     if(dictionaryCurrent == null){
       return "";
     }
+
+    if(word == null) return "";
+
     return dictionaryCurrent.get(word);
   }
   

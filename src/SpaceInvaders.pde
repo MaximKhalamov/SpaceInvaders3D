@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.util.ListIterator;
 import java.util.TimerTask;
 import java.util.Timer;
+import java.util.Date;
 
 if(JAVA){
 import ddf.minim.*;
@@ -20,6 +21,8 @@ import org.gamecontrolplus.*;
 import java.awt.*;
 }
 if(ANDROID){
+import java.io.FileInputStream;
+
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.media.AudioManager;
@@ -343,7 +346,7 @@ void setup(){
   }
   if(ANDROID){
     activity = this.getActivity();
-    avp = new AppVideoPlayer(activity);
+    avp = createPlayer(activity);
   }
   
   UI_FONT = loadFont(FONT_PATH);
@@ -369,6 +372,8 @@ SettingsController settingsController;
 
 boolean isTouchable = false;
 State rememberedState = State.START;
+
+UIButton infiniteButton;
 
 void draw(){
   background(0);
@@ -412,8 +417,9 @@ void draw(){
     settingsUIController = new MenuController(elements);
     
     elements = new ArrayList<>();
+    infiniteButton = new UIButton(width / 2, 3 * height / 7, 3 * width / 8, height / 10, "infinite");
     elements.add(new UIButton(width / 2, 2 * height / 7, 3 * width / 8, height / 10, "start"));
-    elements.add(new UIButton(width / 2, 3 * height / 7, 3 * width / 8, height / 10, "infinite"));
+    elements.add(infiniteButton);
     elements.add(new UIButton(width / 2, 4 * height / 7, 3 * width / 8, height / 10, "settings"));
     elements.add(new UIButton(width / 2, 6 * height / 7, 3 * width / 8, height / 10, "exit"));
     
@@ -470,6 +476,11 @@ void draw(){
           avp.playVideo("cutscene1");
         }
         // Infinite
+        if(endlessAvaliable)
+          infiniteButton.unblock();
+        else
+          infiniteButton.block();
+
         if(startController.getState(1) && endlessAvaliable){
           regime = Regime.INF;
           main.changeState(State.ACTIONFIELD);

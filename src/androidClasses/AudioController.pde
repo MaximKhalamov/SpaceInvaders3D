@@ -44,12 +44,12 @@ class AudioController{
     musics = new ArrayList<>();
 
     mainTheme = getPlayer(MUSIC_MAIN_THEME);
-
     mainTheme.setLooping(true);
 
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH3));
     musics.add(getPlayer(MUSIC_BACKGROUND_PATH1));
     musics.add(getPlayer(MUSIC_BACKGROUND_PATH2));
-    musics.add(getPlayer(MUSIC_BACKGROUND_PATH3));
+
     
     shotSounds = new ArrayList<>();
     for(int i = 0; i < THREAD_NUMBER; i++){
@@ -145,9 +145,6 @@ class AudioController{
   }
 
   public void playBattleSpeach(){
-    if(isSoundOn){
-      // TODO
-    }
   }
 
   public void playOnceShot(){
@@ -158,6 +155,7 @@ class AudioController{
   }
   
   public void playLoopSounds(){
+    // === BROKEN ===
     // if(isPlayable)
     // if(!started){
     //   music.start();
@@ -169,6 +167,8 @@ class AudioController{
     //   isLooped = true;
     //   //loopSound.start();
     // }
+    // === END BROKEN ===
+
     try{      
       if(music == null)
         music = getRandomAudioPlayer(music);
@@ -180,27 +180,37 @@ class AudioController{
 
       mainTheme.start();
       music.start();
-      // mainTheme.pause();
     }catch(NullPointerException e){
     }
   }
   
   public void stopLoopSounds(boolean isStopMusic){
-    //if(isLooped){
-      //startSound.stop();    
-      //if(isLooped)
-      //  loopSound.stop();
-      //isLooped = true;
-      
-    //}else{
-
-    //}
-  //   if(isStopMusic)
-  //     music.stop();
   }
 
   public void playTheme(){
       if(mainTheme != null)
         mainTheme.start();    
+  }
+
+  public void stopAll(){
+    if(mainTheme != null){
+      mainTheme.stop();
+      mainTheme.release();
+    }
+
+    if(music != null){
+      music.stop();
+      music.release();
+    }
+
+
+    mainTheme = getPlayer(MUSIC_MAIN_THEME);
+    mainTheme.setLooping(true);
+
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH1));
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH2));
+    musics.add(getPlayer(MUSIC_BACKGROUND_PATH3));
+
+    music = getRandomAudioPlayer(music);
   }
 }

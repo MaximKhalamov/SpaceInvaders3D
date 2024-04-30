@@ -422,37 +422,44 @@ class ActionField{
 
     //Enemy collision check    
     waveList = enemies.get(0);
+
     Iterator<Starship> enemyIterator = waveList.iterator();
     while(enemyIterator.hasNext()){
-      if(!bullets.isEmpty()){
-        Starship enemy = enemyIterator.next();
-        if(enemy.checkCollision(mainStarship)){
-          mainStarship.setDamage(9999);
-        }
-        Iterator<Bullet> bulletIterator = bullets.iterator();
-          while(bulletIterator.hasNext()){
-            Bullet bullet = bulletIterator.next();
-            if(bullet == null){
-              bulletIterator.remove();
-              continue;
-            }
-            if(bullet.isTimeOver()){
-              bulletIterator.remove();
-              continue;
-            }
+      Starship enemy = enemyIterator.next();
+      if(enemy.checkCollision(mainStarship)){
+        mainStarship.setDamage(9999);
+      }
+    }
 
-  // public float getEnemiesPosition() {
-  //   if(starships.size() != 0) {
-  //     return starships.get(0).getPosZ();
-  //   }
-  // }
-  
-  // public float getRCollidable() { 
-            if( waveControllers.get(0).getRCollidable() > 0 && 
-                abs(waveControllers.get(0).getEnemiesPosition() - bullet.getPosZ()) > waveControllers.get(0).getRCollidable()){
-                  continue;
-            }
-            else if(bullet.checkCollision(enemy)){
+    if(!bullets.isEmpty()){
+
+      // if(enemy.checkCollision(mainStarship)){
+      //   mainStarship.setDamage(9999);
+      // }
+      Iterator<Bullet> bulletIterator = bullets.iterator();
+        while(bulletIterator.hasNext()){
+          Bullet bullet = bulletIterator.next();
+          if(bullet == null){
+            bulletIterator.remove();
+            continue;
+          }
+          if(bullet.isTimeOver()){
+            bulletIterator.remove();
+            continue;
+          }
+          if(bullet.getVelZ() < 0)
+            continue;
+
+          if( waveControllers.get(0).getRCollidable() > 0 && 
+              abs(waveControllers.get(0).getEnemiesPosition() - bullet.getPosZ()) > waveControllers.get(0).getRCollidable()){
+                continue;
+          }
+          else{
+            enemyIterator = waveList.iterator();
+            while(enemyIterator.hasNext()){
+              Starship enemy = enemyIterator.next();
+              if(enemy.checkCollision(bullet)){
+
               bulletIterator.remove();
               if(enemy.setDamage( bullet.getDamage() )){
                 effects.add( new ExplosionEffect( enemy.getPosX(), enemy.getPosY(), enemy.getPosZ(), enemy instanceof BossStarship ) );
@@ -472,12 +479,13 @@ class ActionField{
                   }
                 }
               }; 
-              break;      
+              break;
+
+              }
             }
-        }    
-      } else {
-        break;
-      }
+
+          }
+      }    
     }
     
     //  //enemy.move();                                      // HERE I NEED TO MOVE ENEMY'S STARSHIP
