@@ -12,6 +12,10 @@ PROCESSING_JAVA_PATH = "/home/max/Desktop/processing-4.3/processing-java"
 def main():
     copy_dir(SRC_DIRECTORY + "/androidClasses", DEST_ANDROID_DIRECTORY)
     copy_dir(SRC_DIRECTORY + "/javaClasses", DEST_JAVA_DIRECTORY)
+
+    shutil.rmtree(DEST_ANDROID_DIRECTORY + "/data")
+    shutil.rmtree(DEST_JAVA_DIRECTORY + "/data")
+
     copy_dir("./assets", DEST_ANDROID_DIRECTORY + "/data")
     copy_dir("./assets", DEST_JAVA_DIRECTORY + "/assets")
 

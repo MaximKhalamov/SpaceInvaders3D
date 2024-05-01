@@ -53,6 +53,7 @@ class AppVideoPlayer{
         Looper.prepare();
         mediaPlayer = new MediaPlayer();
 
+        prepareVideoPlayer("video/blackscreen.mp4", "blackscreen");
         if( width / height < 17. / 9.){
           prepareVideoPlayer("video/16x9_01.mp4", "cutscene1");
           prepareVideoPlayer("video/16x9_02.mp4", "cutscene2");
@@ -123,7 +124,15 @@ class AppVideoPlayer{
     }
 
     public void playVideo(String name) {
-      audioController.stopAll();
+      if(audioController != null) 
+        audioController.stopAll();
+
+
+      try {
+        Thread.sleep(3000);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
       log("Playing video");
       isStoppedPlaying = false;
       mediaPlayer = new MediaPlayer();

@@ -35,6 +35,7 @@ import android.hardware.SensorManager;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import cassette.audiofiles.SoundFile;
+import android.media.SoundPool.Builder;
 }
 
 
@@ -212,10 +213,10 @@ String SOUND_SHOT_PATH = prefixFile + "sounds" + File.separator + "shot.mp3";
 String SOUND_DAMAGE_PATH = prefixFile + "sounds" + File.separator + "damage.mp3";
 String SOUND_EXPLOSION_PATH = prefixFile + "sounds" + File.separator + "damage.mp3";
 
-String MUSIC_MAIN_THEME = prefixFile + "sounds" + File.separator + "MainMenuTheme.mp3";
-String MUSIC_BACKGROUND_PATH1 = prefixFile + "sounds" + File.separator + "push-on-134671.mp3";
-String MUSIC_BACKGROUND_PATH2 = prefixFile + "sounds" + File.separator + "galaxyx27.mp3";
-String MUSIC_BACKGROUND_PATH3 = prefixFile + "sounds" + File.separator + "donx27t-stop-151123.mp3";
+String MUSIC_MAIN_THEME = prefixFile + "sounds" + File.separator + "MainMenuTheme.wav";
+String MUSIC_BACKGROUND_PATH1 = prefixFile + "sounds" + File.separator + "push-on-134671.wav";
+String MUSIC_BACKGROUND_PATH2 = prefixFile + "sounds" + File.separator + "galaxyx27.wav";
+String MUSIC_BACKGROUND_PATH3 = prefixFile + "sounds" + File.separator + "donx27t-stop-151123.wav";
 
 String FONT_PATH = prefixFile + "font" + File.separator + "RetroGaming-48.vlw";
 String HUE_SHADER_PATH = prefixFile + "shaders" + File.separator + "hueOffset.glsl";
@@ -375,6 +376,10 @@ State rememberedState = State.START;
 
 UIButton infiniteButton;
 
+if(ANDROID){
+  boolean firstTime = true;
+}
+
 void draw(){
   background(0);
 
@@ -382,6 +387,13 @@ void draw(){
     return;
   }
   
+  if(ANDROID){
+    if(firstTime){
+      avp.playVideo("blackscreen");
+      firstTime = false;
+    }
+  }
+
   if(!isLoading){
     //public UIButton(float xScreen, float yScreen, float lx, float ly, String text)
     UIButton continueButton = new UIButton(width / 2, 2 * height / 7, 3 * width / 8, height / 10, "continue");
@@ -472,7 +484,6 @@ void draw(){
             noCursor();
             warpPointer(CENTER_X, CENTER_Y);
           }
-
           avp.playVideo("cutscene1");
         }
         // Infinite
