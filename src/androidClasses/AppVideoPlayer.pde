@@ -96,31 +96,31 @@ class AppVideoPlayer{
     }
 
       private void log(String content) {
-        String fileName = "SI_log.txt";
+        // String fileName = "SI_log.txt";
 
-        // Get the directory for the user's public downloads directory.
-        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File file = new File(path, fileName);
+        // // Get the directory for the user's public downloads directory.
+        // File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        // File file = new File(path, fileName);
 
-        try {
-            // Create the file if it doesn't exist
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    Log.e("MainActivity", "Failed to create file");
-                    return;
-                }
-            }
+        // try {
+        //     // Create the file if it doesn't exist
+        //     if (!file.exists()) {
+        //         if (!file.createNewFile()) {
+        //             Log.e("MainActivity", "Failed to create file");
+        //             return;
+        //         }
+        //     }
 
-            // Write the content to the file
-            FileOutputStream outputStream = new FileOutputStream(file, true);
-            outputStream.write(("[ " + new Date() + " \t] - " + content + "\n").getBytes());
-            outputStream.close();
+        //     // Write the content to the file
+        //     FileOutputStream outputStream = new FileOutputStream(file, true);
+        //     outputStream.write(("[ " + new Date() + " \t] - " + content + "\n").getBytes());
+        //     outputStream.close();
 
-            // Toast.makeText(context, "File saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("MainActivity", "IOException: " + e.getMessage());
-        }
+        //     // Toast.makeText(context, "File saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        //     Log.e("MainActivity", "IOException: " + e.getMessage());
+        // }
     }
 
     public void playVideo(String name) {
@@ -129,7 +129,7 @@ class AppVideoPlayer{
 
 
       try {
-        Thread.sleep(3000);
+        Thread.sleep(1000);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -154,9 +154,9 @@ class AppVideoPlayer{
             surfaceHolder = surfaceView.getHolder();
             surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-            mediaPlayer.prepare();
-
             activity.addContentView(surfaceView, new ViewGroup.LayoutParams(width, height));
+
+            mediaPlayer.prepare();
 
             mediaPlayer.setLooping(false);
             mediaPlayer.start();
@@ -169,7 +169,9 @@ class AppVideoPlayer{
             }, mediaPlayer.getDuration());
             //}
           }catch (IllegalArgumentException e) { log("ERROR IllegalArgumentException: " + e.getMessage()); e.printStackTrace(); }
-          catch (IllegalStateException e) { log("ERROR IllegalStateException: " + e.getMessage()); e.printStackTrace(); } 
+          catch (IllegalStateException e) { 
+              isKillable = true;
+          } 
           catch (IOException e) { log("ERROR IOException: " + e.getMessage()); e.printStackTrace(); }
           }
         }
